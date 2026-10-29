@@ -63,4 +63,8 @@ when their inputs have not changed. See the [workflow guide](.github/WORKFLOWS.m
 External workflow runs require maintainer approval. Pull requests never receive deployment
 credentials and never deploy the website or Azure resources. Please do not request secrets to run tests.
 
+Maintainers can run all suites from **Actions → Goliat - CI → Run workflow**, selecting `main`.
+Use this entry point for a manual Pages publication too: deployment runs only after successful checks.
+CodeQL also runs weekly without code changes, to check the existing code with updated analysis.
+
 Dependency updates are proposed by Dependabot and reviewed before merging; they are not automatically merged.
