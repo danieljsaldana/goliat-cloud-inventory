@@ -124,13 +124,19 @@ test('FinOps filtra gastos reales y amortizados sin mezclar monedas y enlaza al 
   await expect(share.locator('.finops-share-detail')).toContainText(percent.format(1));
   await page.getByRole('combobox', { name: t('finops.currency'), exact: true }).click();
   await page.getByRole('option', { name: 'EUR', exact: true }).click();
-  await page.getByRole('combobox', { name: t('finops.basis'), exact: true }).click();
+  const basis = page.getByRole('combobox', { name: t('finops.basis'), exact: true });
+  await basis.click();
   await page.getByRole('option', { name: t('finops.amortized'), exact: true }).click();
+  await expect(basis).toBeFocused();
   await expect(page.locator('.finops-total strong')).toContainText('70');
   await expect(page.locator('.finops-total strong')).toHaveText(money(70.27145));
-  await page.getByRole('searchbox', { name: t('finops.search') }).fill('deleted-vm');
+  const search = page.getByRole('searchbox', { name: t('finops.search') });
+  await search.fill('deleted-vm');
+  await expect(search).toHaveValue('deleted-vm');
   await expect(page.locator('.finops-resources tbody tr')).toHaveCount(1);
-  await page.getByRole('searchbox', { name: t('finops.search') }).fill('');
+  await search.fill('');
+  await expect(search).toHaveValue('');
+  await expect(page.locator('.finops-resources tbody tr')).toHaveCount(3);
   await page
     .locator('.finops-resources')
     .getByRole('link', { name: resource.name, exact: true })

@@ -212,7 +212,7 @@ jobs:
 
   pages:
     needs: ci
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: always() && needs.ci.result == 'success' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
       contents: read
       pages: write
