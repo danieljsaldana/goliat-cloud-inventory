@@ -51,6 +51,10 @@ Las ramas fusionadas se eliminan automáticamente.
 
 ## Pruebas y diagnósticos
 
+Todos los jobs Linux usan `ubuntu-24.04`, también CodeQL y Pages. No se usa `ubuntu-latest`:
+así una migración automática de la imagen a otra versión mayor no cambia el entorno sin validación.
+La imagen de Ubuntu 24.04 sigue recibiendo actualizaciones del proveedor.
+
 El panel usa Node 24, PostgreSQL 17 temporal y datos ficticios.
 Las pruebas e2e compilan y arrancan Next.js en el puerto 4100.
 Los datos viven en esquemas aislados que se eliminan al terminar.

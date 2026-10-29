@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   changes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       dashboard: ${{ steps.filter.outputs.dashboard }}
@@ -44,7 +44,7 @@ jobs:
 
   quality:
     needs: changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -63,7 +63,7 @@ jobs:
   functions:
     needs: changes
     if: needs.changes.outputs.functions == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -84,7 +84,7 @@ jobs:
   tests:
     needs: changes
     if: needs.changes.outputs.dashboard == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     services:
       postgres:
@@ -132,7 +132,7 @@ jobs:
   site:
     needs: changes
     if: needs.changes.outputs.site == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -157,7 +157,7 @@ jobs:
   iac:
     needs: changes
     if: needs.changes.outputs.iac == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
@@ -193,7 +193,7 @@ jobs:
     name: CI
     if: always()
     needs: [changes, quality, functions, tests, site, iac, codeql]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Require successful applicable checks
