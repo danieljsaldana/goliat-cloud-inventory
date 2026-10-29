@@ -87,6 +87,8 @@ Pages comprueba que el commit sigue siendo el último de `main` antes de publica
 La publicación ligera se solicita también tras cambios de documentación: así un commit posterior
 sin cambios de web no deja sin publicar una modificación de web anterior.
 Las suites pesadas siguen dependiendo solo de los archivos afectados.
+La condición de publicación se evalúa incluso con suites omitidas, pero exige que **CI**
+haya terminado correctamente. Un fallo o una cancelación nunca autoriza el despliegue.
 
 El workflow prepara `site/` con los diagramas Archify, la imagen social y los datos ficticios.
 No publica configuraciones locales, el backend ni el resto de `docs/`.
