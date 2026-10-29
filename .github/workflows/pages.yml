@@ -1,41 +1,52 @@
 name: Goliat - GitHub Pages
 
 on:
-  push:
-    branches: [main]
-    paths:
-      [
-        'site/**',
-        'docs/architecture.html',
-        'docs/azure-deployment.html',
-        'scripts/prepare-site.mjs',
-        'public/social/cloud-inventory.png',
-        'server/modules/azure/seed/data/inventory.json',
-        'src/core/**',
-        'src/features/administration/**',
-        '.github/workflows/pages.yml',
-      ]
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  current:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
+    outputs:
+      latest: ${{ steps.revision.outputs.latest }}
+    steps:
+      - name: Check that this is the latest main revision
+        id: revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          latest=$(gh api "repos/$REPOSITORY/commits/main" --jq .sha)
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo 'latest=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'latest=false' >> "$GITHUB_OUTPUT"
+            echo "Skipping superseded revision $GITHUB_SHA; main is $latest."
+          fi
+  deploy:
+    needs: current
+    if: needs.current.outputs.latest == 'true'
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Obtener el código
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Preparar Node.js
         uses: actions/setup-node@v7
         with:
