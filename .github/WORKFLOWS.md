@@ -51,6 +51,10 @@ Las ramas fusionadas se eliminan automáticamente.
 
 ## Pruebas y diagnósticos
 
+Todos los jobs Linux usan `ubuntu-24.04`, también CodeQL y Pages. No se usa `ubuntu-latest`:
+así una migración automática de la imagen a otra versión mayor no cambia el entorno sin validación.
+La imagen de Ubuntu 24.04 sigue recibiendo actualizaciones del proveedor.
+
 El panel usa Node 24, PostgreSQL 17 temporal y datos ficticios.
 Las pruebas e2e compilan y arrancan Next.js en el puerto 4100.
 Los datos viven en esquemas aislados que se eliminan al terminar.
@@ -87,6 +91,8 @@ Pages comprueba que el commit sigue siendo el último de `main` antes de publica
 La publicación ligera se solicita también tras cambios de documentación: así un commit posterior
 sin cambios de web no deja sin publicar una modificación de web anterior.
 Las suites pesadas siguen dependiendo solo de los archivos afectados.
+La condición de publicación se evalúa incluso con suites omitidas, pero exige que **CI**
+haya terminado correctamente. Un fallo o una cancelación nunca autoriza el despliegue.
 
 El workflow prepara `site/` con los diagramas Archify, la imagen social y los datos ficticios.
 No publica configuraciones locales, el backend ni el resto de `docs/`.
