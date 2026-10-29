@@ -52,6 +52,10 @@ jobs:
           const sha = process.env.GITHUB_SHA;
           const latest = JSON.parse(gh('api', `repos/${repository}/commits/main`)).sha;
           if (latest !== sha) throw new Error('main changed; rerun this workflow on the latest revision.');
+          const tags = JSON.parse(gh('api',
+            `repos/${repository}/git/matching-refs/tags/${process.env.TAG}`));
+          if (tags.some(tag => tag.ref === `refs/tags/${process.env.TAG}`))
+            throw new Error('This tag already exists; choose a new version.');
           const runs = JSON.parse(gh('api', '--method', 'GET',
             `repos/${repository}/actions/workflows/dashboard-check.yml/runs`,
             '-f', `head_sha=${sha}`, '-f', 'status=completed', '-f', 'per_page=100'));

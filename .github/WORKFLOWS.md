@@ -114,7 +114,7 @@ La publicación de Pages se comprueba por separado en su job posterior.
 
 En **Actions → Goliat - Release notes → Run workflow**, selecciona `main` e indica:
 
-- `tag`: nueva versión estable, por ejemplo `v1.0.1`.
+- `tag`: nueva versión estable sin etiqueta existente, por ejemplo `v1.0.1`.
 - `previous_tag`: opcional, por ejemplo `v1.0.0`; vacío deja que GitHub elija.
 - `create_draft`: desactivado genera solo una vista previa; activado crea además una release en borrador.
 
