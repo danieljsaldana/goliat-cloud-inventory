@@ -67,4 +67,10 @@ Maintainers can run all suites from **Actions → Goliat - CI → Run workflow**
 Use this entry point for a manual Pages publication too: deployment runs only after successful checks.
 CodeQL also runs weekly without code changes, to check the existing code with updated analysis.
 
+Every CI run includes a **Summary** table of applicable checks and their results.
+Maintainers can use **Goliat - Release notes** on `main` to preview grouped release notes,
+download them, or create a draft release for manual review. It never publishes automatically.
+Classify pull requests with `bug`, `enhancement`, `documentation` or `dependencies` labels
+so GitHub groups them correctly. See the [workflow guide](.github/WORKFLOWS.md).
+
 Dependency updates are proposed by Dependabot and reviewed before merging; they are not automatically merged.

@@ -1,0 +1,110 @@
+name: Goliat - Release notes
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'New version (vMAJOR.MINOR.PATCH), for example v1.1.0'
+        required: true
+        type: string
+      previous_tag:
+        description: 'Previous published tag (empty lets GitHub choose)'
+        required: false
+        type: string
+      create_draft:
+        description: 'Create a draft release after generating the preview'
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-notes-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  notes:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Validate version and require successful main CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          PREVIOUS_TAG: ${{ inputs.previous_tag }}
+        run: |
+          node --input-type=module <<'JS'
+          import { execFileSync } from 'node:child_process';
+          const gh = (...args) => execFileSync('gh', args, { encoding: 'utf8' });
+          const version = /^v\d+\.\d+\.\d+$/;
+          if (!version.test(process.env.TAG)) throw new Error('Use a stable version such as v1.1.0.');
+          if (process.env.PREVIOUS_TAG && !version.test(process.env.PREVIOUS_TAG))
+            throw new Error('Previous tag must use vMAJOR.MINOR.PATCH.');
+          const repository = process.env.GITHUB_REPOSITORY;
+          const sha = process.env.GITHUB_SHA;
+          const latest = JSON.parse(gh('api', `repos/${repository}/commits/main`)).sha;
+          if (latest !== sha) throw new Error('main changed; rerun this workflow on the latest revision.');
+          const runs = JSON.parse(gh('api', '--method', 'GET',
+            `repos/${repository}/actions/workflows/dashboard-check.yml/runs`,
+            '-f', `head_sha=${sha}`, '-f', 'status=completed', '-f', 'per_page=100'));
+          if (!runs.workflow_runs.some(run => run.head_sha === sha && run.head_branch === 'main'
+            && run.conclusion === 'success' && ['push', 'workflow_dispatch'].includes(run.event)))
+            throw new Error('This main commit needs a successful completed Goliat CI run.');
+          JS
+      - name: Generate grouped notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          PREVIOUS_TAG: ${{ inputs.previous_tag }}
+        run: |
+          node --input-type=module <<'JS'
+          import { execFileSync } from 'node:child_process';
+          import { writeFileSync, appendFileSync } from 'node:fs';
+          const payload = {
+            tag_name: process.env.TAG,
+            target_commitish: process.env.GITHUB_SHA,
+            configuration_file_path: '.github/release.yml',
+          };
+          if (process.env.PREVIOUS_TAG) payload.previous_tag_name = process.env.PREVIOUS_TAG;
+          const notes = JSON.parse(execFileSync('gh', ['api', '--method', 'POST',
+            `repos/${process.env.GITHUB_REPOSITORY}/releases/generate-notes`, '--input', '-'],
+            { input: JSON.stringify(payload), encoding: 'utf8' }));
+          writeFileSync('release-notes.md', notes.body);
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+            `# Release notes preview: ${process.env.TAG}\n\nCommit: ${process.env.GITHUB_SHA}\n\n${notes.body}\n\n`
+            + 'Preview only unless draft creation was selected. No release is automatically published.\n');
+          JS
+      - name: Save reusable release notes
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-notes
+          path: release-notes.md
+          retention-days: 30
+
+  draft:
+    needs: notes
+    if: inputs.create_draft && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: release-notes
+      - name: Create a draft for manual review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          url=$(gh release create "$TAG" --repo "$REPOSITORY" --target "$GITHUB_SHA" \
+            --title "$TAG" --notes-file release-notes.md --draft)
+          printf '## Draft release\n\n[Review before publishing](%s)\n' "$url" >> "$GITHUB_STEP_SUMMARY"

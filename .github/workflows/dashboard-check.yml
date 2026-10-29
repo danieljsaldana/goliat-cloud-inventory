@@ -24,6 +24,8 @@ jobs:
       site: ${{ steps.filter.outputs.site }}
       iac: ${{ steps.filter.outputs.iac }}
       codeql: ${{ steps.filter.outputs.codeql }}
+      changed_files: ${{ steps.filter.outputs.changed_files }}
+      full: ${{ steps.filter.outputs.full }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -33,7 +35,7 @@ jobs:
         with:
           node-version: '24'
       - name: Test change selection
-        run: node --test tests/ci-changes.test.mjs
+        run: node --test tests/ci-changes.test.mjs tests/ci-summary.test.mjs
       - name: Select affected suites
         id: filter
         env:
@@ -196,19 +198,16 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Require successful applicable checks
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Publish CI summary and require successful applicable checks
         env:
           RESULTS: ${{ toJSON(needs) }}
-        run: |
-          node --input-type=module <<'JS'
-          const jobs = JSON.parse(process.env.RESULTS);
-          for (const [name, { result }] of Object.entries(jobs)) {
-            console.log(`${name}: ${result}`);
-            if (result !== 'success' && result !== 'skipped') process.exitCode = 1;
-          }
-          if (jobs.changes.result !== 'success' || jobs.quality.result !== 'success')
-            process.exitCode = 1;
-          JS
+        run: node scripts/ci-summary.mjs
 
   pages:
     needs: ci
