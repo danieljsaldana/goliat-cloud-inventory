@@ -1,39 +1,89 @@
-name: Goliat - Pruebas
+name: Goliat - CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  functions:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      dashboard: ${{ steps.filter.outputs.dashboard }}
+      functions: ${{ steps.filter.outputs.functions }}
+      site: ${{ steps.filter.outputs.site }}
+      iac: ${{ steps.filter.outputs.iac }}
+      codeql: ${{ steps.filter.outputs.codeql }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Test change selection
+        run: node --test tests/ci-changes.test.mjs
+      - name: Select affected suites
+        id: filter
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: node scripts/ci-changes.mjs
+
+  quality:
+    needs: changes
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Obtener el código
-        uses: actions/checkout@v6
-      - name: Preparar Node.js para Functions
-        uses: actions/setup-node@v7
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - name: Lint code
+        if: needs.changes.outputs.dashboard == 'true' || needs.changes.outputs.functions == 'true' || needs.changes.outputs.site == 'true' || needs.changes.outputs.iac == 'true' || needs.changes.outputs.codeql == 'true'
+        run: npm run lint
+
+  functions:
+    needs: changes
+    if: needs.changes.outputs.functions == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: functions/package-lock.json
-      - name: Instalar el productor
-        run: npm --prefix functions ci
-      - name: Comprobar sintaxis
-        run: npm --prefix functions run check
-      - name: Probar la Function sin recursos Azure
-        run: npm --prefix functions test
-      - name: Crear el paquete de despliegue
-        run: npm --prefix functions run package
+      - run: npm --prefix functions ci
+      - run: npm --prefix functions run check
+      - run: npm --prefix functions test
+      - name: Verify dashboard-collector contract
+        run: node --test tests/function-contract.test.mjs tests/inventory-catalog.test.mjs
+      - run: npm --prefix functions run package
+
   tests:
+    needs: changes
+    if: needs.changes.outputs.dashboard == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
@@ -57,22 +107,18 @@ jobs:
       RUN_DB_TESTS: '1'
       NEXT_TELEMETRY_DISABLED: '1'
     steps:
-      - name: Obtener el código
-        uses: actions/checkout@v6
-      - name: Preparar Node.js
-        uses: actions/setup-node@v7
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: npm
-      - name: Instalar dependencias
-        run: npm ci
-      - name: Ejecutar pruebas unitarias y de PostgreSQL
-        run: npm test
-      - name: Instalar Chromium para las pruebas del panel
-        run: npx playwright install --with-deps chromium
-      - name: Probar el panel en navegador
-        run: npm run test:e2e
-      - name: Guardar diagnóstico de las pruebas de navegador
+      - run: npm ci
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Save browser diagnostics
         if: failure()
         uses: actions/upload-artifact@v7
         with:
@@ -82,3 +128,93 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  site:
+    needs: changes
+    if: needs.changes.outputs.site == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:site
+      - name: Save site diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pruebas-site
+          path: test-results/site/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  iac:
+    needs: changes
+    if: needs.changes.outputs.iac == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Verify PowerShell is available
+        shell: pwsh
+        run: $PSVersionTable.PSVersion
+      - name: Compile Bicep without Azure login
+        shell: bash
+        run: |
+          az bicep install
+          for template in iac/*.bicep; do
+            az bicep build --file "$template" --stdout > /dev/null
+          done
+      - name: Test deployment scripts with a fake Azure CLI
+        run: node --test --test-concurrency=1 tests/iac.test.mjs tests/project-iac.test.mjs tests/goliat-commands.test.mjs tests/web-package.test.mjs
+
+  codeql:
+    needs: changes
+    if: needs.changes.outputs.codeql == 'true'
+    permissions:
+      contents: read
+      security-events: write
+    uses: ./.github/workflows/codeql.yml
+
+  ci:
+    name: CI
+    if: always()
+    needs: [changes, quality, functions, tests, site, iac, codeql]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful applicable checks
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module <<'JS'
+          const jobs = JSON.parse(process.env.RESULTS);
+          for (const [name, { result }] of Object.entries(jobs)) {
+            console.log(`${name}: ${result}`);
+            if (result !== 'success' && result !== 'skipped') process.exitCode = 1;
+          }
+          if (jobs.changes.result !== 'success' || jobs.quality.result !== 'success')
+            process.exitCode = 1;
+          JS
+
+  pages:
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

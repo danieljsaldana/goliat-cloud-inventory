@@ -1,44 +1,106 @@
-# Pruebas automáticas
+# CI, contribuciones y mantenimiento
 
-## Protección y mantenimiento
+## Cuándo se ejecuta cada comprobación
 
-`main` exige pull requests y los checks `tests`, `functions` y `CodeQL (JavaScript)`.
-No exige aprobación de otra persona, para permitir el mantenimiento por un único autor.
-Los force pushes y el borrado de la rama están bloqueados; las ramas fusionadas se eliminan automáticamente.
+[`dashboard-check.yml`](workflows/dashboard-check.yml) se ejecuta en pull requests a `main`,
+en pushes a `main` y manualmente. No se ejecuta además en cada push a una rama de contribución:
+la pull request ya cubre ese cambio y evita duplicar ejecuciones.
 
-[`workflows/codeql.yml`](workflows/codeql.yml) analiza JavaScript en pushes y pull requests a `main`,
-semanalmente y bajo demanda. No ejecuta la aplicación ni necesita credenciales de Azure.
+El job `changes` compara los commits completos, no solo el último commit de la pull request.
+Los renombrados se consideran eliminación y adición, para validar ambos lados.
+[`ci-changes.mjs`](../scripts/ci-changes.mjs) selecciona los jobs y tiene pruebas sin dependencias.
+Si el diff falla, la CI falla: no se omiten pruebas silenciosamente.
+
+| Cambio                                                        | Comprobaciones                                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Solo Markdown, texto o plantillas de issues                   | Selector y formato; sin PostgreSQL, build, navegador ni CodeQL                     |
+| Panel, backend o pruebas del panel                            | Formato, lint, unitarias, PostgreSQL 17, build de Next.js, Playwright y CodeQL     |
+| Function                                                      | Formato, lint, pruebas en Node 22, contrato compartido, paquete y CodeQL           |
+| Portada estática                                              | Formato, lint y pruebas de la web con Chromium; CodeQL si cambia JavaScript o HTML |
+| IaC o scripts de despliegue                                   | Formato, lint, compilación Bicep y pruebas de scripts con CLI Azure ficticia       |
+| Contrato de inventario o datos compartidos con la demo        | Se validan también sus consumidores: Function o web estática                       |
+| Workflows, dependencias raíz, scripts o rutas no clasificadas | Todas las suites, por precaución                                                   |
+| Lanzamiento manual                                            | Todas las suites                                                                   |
+
+El job `quality` siempre comprueba formato. Solo ejecuta lint si hay cambios que requieren suites de código.
+Utiliza las dependencias fijadas por el lockfile, también en las contribuciones de documentación.
+
+## Check obligatorio
+
+`main` exige una pull request y el check **CI**, vinculado a GitHub Actions.
+Este check siempre se publica, incluso si solo cambia documentación.
+Agrega los resultados de `changes`, `quality`, `tests`, `functions`, `site`, `iac` y `codeql`:
+un fallo o cancelación bloquea la integración; una suite no aplicable puede omitirse.
+No se ponen filtros `paths` en el workflow obligatorio, porque dejarían pull requests esperando un check inexistente.
+
+La rama debe estar actualizada antes de fusionar y las conversaciones deben estar resueltas.
+Se bloquean force pushes y borrados, también para administradores.
+No se exige aprobación de otra persona, para permitir el mantenimiento por un único autor.
+Las ramas fusionadas se eliminan automáticamente.
+
+## Contribuciones externas
+
+- Se usa `pull_request`, nunca `pull_request_target` para ejecutar código de contribuciones.
+- El token tiene lectura por defecto; no se pasan secretos ni credenciales de Azure.
+- Los checkouts no conservan credenciales de Git.
+- Las ejecuciones de colaboradores externos requieren aprobación del mantenedor.
+- Antes de aprobar, revisa especialmente cambios en workflows, dependencias y scripts de instalación.
+- Dependabot abre pull requests, pero no se fusionan automáticamente.
+- Las ejecuciones anteriores de una misma pull request se cancelan al recibir nuevos commits.
+- Los pushes a `main` tienen grupos por commit: un cambio de documentación no cancela ni sustituye una publicación pendiente.
+
+## Pruebas y diagnósticos
+
+El panel usa Node 24, PostgreSQL 17 temporal y datos ficticios.
+Las pruebas e2e compilan y arrancan Next.js en el puerto 4100.
+Los datos viven en esquemas aislados que se eliminan al terminar.
+La Function usa Node 22, igual que su entorno Azure.
+El contrato se prueba entre el productor, el catálogo de columnas y el normalizador del panel.
+La web estática se prueba con `npm run test:site`, sin base de datos.
+
+El job IaC comprueba que PowerShell está disponible, compila todos los Bicep sin login y prueba
+los scripts de despliegue y empaquetado con una CLI ficticia. No crea ni destruye recursos reales.
+No se despliega infraestructura automáticamente desde una pull request.
+
+Los fallos de navegador publican diagnósticos con retención de siete días.
+No hay reintentos automáticos que oculten fallos.
+
+## CodeQL y dependencias
+
+[`codeql.yml`](workflows/codeql.yml) es reutilizable desde CI: se llama solo cuando corresponde.
+Además se ejecuta semanalmente y bajo demanda, aunque no haya cambios, para detectar avisos nuevos.
+Solo el job de análisis tiene `security-events: write`.
 Los resultados aparecen en **Security → Code scanning**; un análisis correcto no garantiza la ausencia de vulnerabilidades.
 
-[`dependabot.yml`](dependabot.yml) propone actualizaciones semanales para npm (web y Function)
-y GitHub Actions. Las actualizaciones compatibles se agrupan y no se fusionan automáticamente.
-También están activadas las alertas de dependencias, las actualizaciones de seguridad y los informes privados.
-Consulta [SECURITY.md](../SECURITY.md) y [CONTRIBUTING.md](../CONTRIBUTING.md).
+[`dependabot.yml`](dependabot.yml) propone actualizaciones semanales de npm (web y Function)
+y GitHub Actions. Agrupa actualizaciones compatibles; los cambios mayores quedan separados.
+Las alertas de dependencias, actualizaciones de seguridad e informes privados están habilitados.
 
-[`workflows/dashboard-check.yml`](workflows/dashboard-check.yml) ejecuta las pruebas del producto en cada push, pull request o lanzamiento manual.
+## Publicación de GitHub Pages
 
-[`workflows/pages.yml`](workflows/pages.yml) publica la portada estática de `site/` en GitHub Pages.
-Ejecuta `scripts/prepare-site.mjs` para copiar los dos documentos Archify públicos, la imagen social y preparar la demo desde
-la semilla ficticia, con sus helpers compartidos de agregación y paginación. No incluye el resto
-de `docs/`, configuraciones locales ni código del servidor. Los cambios en los diagramas, la semilla
-y los modelos compartidos o la portada social también disparan el despliegue.
+[`pages.yml`](workflows/pages.yml) solo es reutilizable desde CI; no tiene un lanzamiento manual que evite las comprobaciones.
+CI lo llama desde `main`, después del check **CI** correcto.
+Una pull request, incluso de una rama del propio repositorio, nunca despliega.
+Para publicar manualmente, lanza **Goliat - CI** en `main`: ejecutará primero todas las suites.
+
+Pages comprueba que el commit sigue siendo el último de `main` antes de publicar.
+La publicación ligera se solicita también tras cambios de documentación: así un commit posterior
+sin cambios de web no deja sin publicar una modificación de web anterior.
+Las suites pesadas siguen dependiendo solo de los archivos afectados.
+
+El workflow prepara `site/` con los diagramas Archify, la imagen social y los datos ficticios.
+No publica configuraciones locales, el backend ni el resto de `docs/`.
+Usa el entorno `github-pages` (solo `main`) y OIDC, sin secretos añadidos.
+Solo el job de despliegue recibe `pages: write` e `id-token: write`.
 La aplicación Next.js no se despliega en Pages.
 
-El job utiliza el entorno `github-pages`, configurado para aceptar despliegues solo desde `main`.
-No necesita secretos añadidos al entorno: usa el token de GitHub Actions y OIDC.
-En **Settings → Pages**, selecciona **GitHub Actions** como origen. Crear el entorno no publica
-los archivos ni activa Pages por sí solo.
+## Proceso del mantenedor
 
-El proyecto no conserva un historial anterior: `server/migrations/001_initial.sql` permanece vacío. Las pruebas de integración y navegador inicializan sus esquemas aislados desde `server/schema/initial.sql`, igual que `db:init`. Las pruebas del migrador utilizan SQL temporal independiente.
+1. Revisa el diff, los requisitos de instalación y que no haya información sensible.
+2. Autoriza la ejecución externa si corresponde.
+3. Espera al check **CI**; revisa los jobs omitidos y los avisos de CodeQL y Dependabot.
+4. Resuelve comentarios y fusiona la pull request actualizada.
+5. Si cambió la web, comprueba el despliegue posterior a `main`.
+6. Para una versión, crea una release desde un commit de `main` con CI correcta. No publiques desde una pull request.
 
-Instala las dependencias con `npm ci` y ejecuta `npm test` en Node.js 24. El script ya configura la ejecución secuencial para que las pruebas no compitan por el bloqueo de migraciones. Usa un PostgreSQL 17 temporal para comprobar migraciones, semilla e integración con la base de datos. El resto de pruebas verifica normalizadores, autenticación y reglas del repositorio con fixtures y SDK simulados.
-
-El job de la Function usa Node.js 22, igual que su entorno Azure. Su SDK `@azure/functions` es CommonJS: las pruebas importan el módulo por defecto para acceder a `HttpResponse`, sin depender de la detección de exports de Node.js 24. Las pruebas de IaC utilizan Windows PowerShell 5.1 en Windows y `pwsh` en Linux. El puerto de PostgreSQL se valida como un entero JSON entre 1 y 65535, admitiendo tanto `Int32` como `Int64`, porque `ConvertFrom-Json` devuelve tipos distintos según la versión de PowerShell. Se rechazan strings, decimales y valores fuera de rango.
-
-Después instala Chromium y ejecuta `npm run test:e2e`. Playwright compila y arranca Next.js en el puerto 4100, usa sesiones demo reales y prueba el panel en escritorio/español y móvil/inglés. Los datos de navegador viven en un esquema aleatorio separado de las pruebas del backend; se elimina al terminar. Comprueba navegación, filtros, tablas, gráficos, estados y actualización, incluido el bloqueo de Azure visible para dos sesiones.
-
-Si falla una prueba de navegador, publica `playwright-report/` y `test-results/` como artefactos de diagnóstico con retención de siete días. Esos archivos se ignoran en Git y Docker. No hay reintentos automáticos que oculten un fallo.
-
-La preparación de Node y la publicación de diagnósticos usan las versiones actuales de [setup-node](https://github.com/actions/setup-node) y [upload-artifact](https://github.com/actions/upload-artifact). PostgreSQL se comprueba por TCP antes de iniciar las pruebas.
-
-No necesita secrets ni conexiones a Azure o PostgreSQL. La ingesta y las migraciones de producción se ejecutan desde el orquestador del despliegue, como se describe en el [backend](../docs/backend.md).
+Consulta [CONTRIBUTING.md](../CONTRIBUTING.md) y [SECURITY.md](../SECURITY.md).

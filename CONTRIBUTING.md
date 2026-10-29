@@ -55,4 +55,12 @@ CI creates its own PostgreSQL service and uses synthetic data; no Azure credenti
 3. Link related issues and include sanitised screenshots for UI changes.
 4. Wait for the required checks and address review feedback.
 
+CI selects checks based on the complete pull request diff. Documentation-only changes check
+formatting without starting PostgreSQL or browser tests. Changes to shared code also validate
+affected consumers. The required **CI** check aggregates applicable jobs; skipped suites are normal
+when their inputs have not changed. See the [workflow guide](.github/WORKFLOWS.md).
+
+External workflow runs require maintainer approval. Pull requests never receive deployment
+credentials and never deploy the website or Azure resources. Please do not request secrets to run tests.
+
 Dependency updates are proposed by Dependabot and reviewed before merging; they are not automatically merged.

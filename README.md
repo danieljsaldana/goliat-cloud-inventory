@@ -174,7 +174,7 @@ npm run lint && npm run format:check && npm run build
 
 Database tests need `RUN_DB_TESTS=1` and a temporary database whose name ends in `_test`; they verify repeatable migrations, publication of the 73 views, repeatable seed, rollback and deduplication. Browser tests (`npx playwright install chromium && npm run test:e2e`) build and start the production server on port 4100 with their own demo session, a random schema and fake data; they cover navigation, ES/EN switch, filters, charts, refresh lock for two users, FinOps, administration and the architecture view on desktop (Spanish) and mobile (English).
 
-The test workflow ([.github/workflows/dashboard-check.yml](.github/workflows/dashboard-check.yml)) runs the Functions tests on Node 22 and the unit, PostgreSQL 17 and browser tests on Node 24 for every push and pull request. It needs no secrets. The separate Pages workflow publishes only the static product website. See [.github/WORKFLOWS.md](.github/WORKFLOWS.md).
+The CI workflow ([.github/workflows/dashboard-check.yml](.github/workflows/dashboard-check.yml)) selects checks for pull requests and pushes to `main` based on the changed files. Documentation-only changes check formatting; affected code runs Functions tests on Node 22 or unit, PostgreSQL 17 and browser tests on Node 24, plus lint and CodeQL. The required **CI** check aggregates the results. Tests need no secrets. Pages publishes only the static product website from `main`, after successful CI. See [.github/WORKFLOWS.md](.github/WORKFLOWS.md).
 
 Tests mock the cloud SDKs and do not perform a real Entra ID login. Before going to production validate tenant, permissions, PostgreSQL TLS and the Azure identity of the environment, and define a retention policy for snapshots and blobs.
 
