@@ -11,16 +11,16 @@ Los renombrados se consideran eliminación y adición, para validar ambos lados.
 [`ci-changes.mjs`](../scripts/ci-changes.mjs) selecciona los jobs y tiene pruebas sin dependencias.
 Si el diff falla, la CI falla: no se omiten pruebas silenciosamente.
 
-| Cambio                                                        | Comprobaciones                                                                 |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Solo Markdown, texto o plantillas de issues                   | Selector y formato; sin PostgreSQL, build, navegador ni CodeQL                 |
-| Panel, backend o pruebas del panel                            | Formato, lint, unitarias, PostgreSQL 17, build de Next.js, Playwright y CodeQL |
-| Function                                                      | Formato, lint, pruebas en Node 22, contrato compartido, paquete y CodeQL       |
-| Portada estática                                              | Formato, lint y pruebas de la web con Chromium; CodeQL si cambia JavaScript    |
-| IaC o scripts de despliegue                                   | Formato, lint, compilación Bicep y pruebas de scripts con CLI Azure ficticia   |
-| Contrato de inventario o datos compartidos con la demo        | Se validan también sus consumidores: Function o web estática                   |
-| Workflows, dependencias raíz, scripts o rutas no clasificadas | Todas las suites, por precaución                                               |
-| Lanzamiento manual                                            | Todas las suites                                                               |
+| Cambio                                                        | Comprobaciones                                                                     |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Solo Markdown, texto o plantillas de issues                   | Selector y formato; sin PostgreSQL, build, navegador ni CodeQL                     |
+| Panel, backend o pruebas del panel                            | Formato, lint, unitarias, PostgreSQL 17, build de Next.js, Playwright y CodeQL     |
+| Function                                                      | Formato, lint, pruebas en Node 22, contrato compartido, paquete y CodeQL           |
+| Portada estática                                              | Formato, lint y pruebas de la web con Chromium; CodeQL si cambia JavaScript o HTML |
+| IaC o scripts de despliegue                                   | Formato, lint, compilación Bicep y pruebas de scripts con CLI Azure ficticia       |
+| Contrato de inventario o datos compartidos con la demo        | Se validan también sus consumidores: Function o web estática                       |
+| Workflows, dependencias raíz, scripts o rutas no clasificadas | Todas las suites, por precaución                                                   |
+| Lanzamiento manual                                            | Todas las suites                                                                   |
 
 El job `quality` siempre comprueba formato. Solo ejecuta lint si hay cambios que requieren suites de código.
 Utiliza las dependencias fijadas por el lockfile, también en las contribuciones de documentación.

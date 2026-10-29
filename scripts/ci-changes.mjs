@@ -11,7 +11,7 @@ export function classifyChanges(paths, { full = false } = {}) {
     if (/^\.github\/(ISSUE_TEMPLATE\/|dependabot\.yml$)/.test(path)) continue;
     if (/^site\//.test(path) || path === 'tests/site.browser.mjs') {
       selected.add('site');
-      if (/\.(js|mjs)$/.test(path)) selected.add('codeql');
+      if (/\.(js|mjs|html)$/.test(path)) selected.add('codeql');
       continue;
     }
     if (/^functions\//.test(path)) {
@@ -54,6 +54,7 @@ export function classifyChanges(paths, { full = false } = {}) {
     if (/^docs\/(architecture|azure-deployment)\.(html|json)$/.test(path)) {
       selected.add('dashboard');
       selected.add('site');
+      if (path.endsWith('.html')) selected.add('codeql');
       continue;
     }
     for (const suite of suites) selected.add(suite);
@@ -61,12 +62,13 @@ export function classifyChanges(paths, { full = false } = {}) {
   return Object.fromEntries(suites.map((suite) => [suite, selected.has(suite)]));
 }
 
-export function changedPaths(base, head, { pullRequest = false } = {}) {
+export function changedPaths(base, head, { pullRequest = false, cwd = process.cwd() } = {}) {
   if (!/^[a-f0-9]{40}$/.test(base || '') || !/^[a-f0-9]{40}$/.test(head || ''))
     throw new Error('CI diff requires valid base and head commit SHAs.');
   const revisions = pullRequest ? [`${base}...${head}`] : [base, head];
   return execFileSync('git', ['diff', '--name-only', '-z', '--no-renames', ...revisions, '--'], {
     encoding: 'utf8',
+    cwd,
   })
     .split('\0')
     .filter(Boolean);
