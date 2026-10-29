@@ -191,7 +191,7 @@ Tests mock the cloud SDKs and do not perform a real Entra ID login. Before going
 - Cloud and database credentials stay on the server; the browser only talks to the backend APIs.
 - Data APIs return `private, no-store`; responses include `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN` and a restrictive referrer policy. The architecture iframe is sandboxed.
 - FinOps validates origin, URL credentials, subscription path and pagination cycles before sending a token to ARM; it enforces per-process limits (two concurrent queries, 50 000 rows, 8 MiB per result, 16 MiB cache) and answers `429` with `Retry-After` on excess.
-- Known advisory: `@azure/identity` 4.14 pins `@azure/msal-node` 6.x, which carries [GHSA-xcx6-jx8p-x3h5](https://github.com/advisories/GHSA-xcx6-jx8p-x3h5) (authorization-code flow). Goliat uses client-secret and managed-identity credentials only, so the affected flow is never exercised; the dependency will be bumped as soon as upstream releases a compatible version.
+- The web and collector use `@azure/identity` 4.14.1 with patched `@azure/msal-node` 7.1.2, resolving [GHSA-xcx6-jx8p-x3h5](https://github.com/advisories/GHSA-xcx6-jx8p-x3h5). Keep both dependency lockfiles updated.
 
 Please report vulnerabilities privately through GitHub security advisories instead of public issues.
 
