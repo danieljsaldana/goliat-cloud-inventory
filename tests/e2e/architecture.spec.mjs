@@ -153,7 +153,7 @@ test('la arquitectura y el documento directo requieren la misma sesión que Azur
   expect(document.headers()['content-type']).toContain('text/html');
   expect(document.headers()['cache-control']).toBe('private, no-store');
   expect(document.headers()['content-security-policy']).toContain("frame-ancestors 'self'");
-  expect(await document.text()).toContain('Goliat - Cloud Inventory');
+  expect(await document.text()).toContain('Goliat · Arquitectura de la aplicación');
   const azureDocument = await page.request.get('/docs/azure-deployment.html');
   expect(azureDocument.status()).toBe(200);
   expect(azureDocument.headers()['cache-control']).toBe('private, no-store');
