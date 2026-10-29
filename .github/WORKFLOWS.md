@@ -47,6 +47,7 @@ Las ramas fusionadas se eliminan automáticamente.
 - Antes de aprobar, revisa especialmente cambios en workflows, dependencias y scripts de instalación.
 - Dependabot abre pull requests, pero no se fusionan automáticamente.
 - Las ejecuciones anteriores de una misma pull request se cancelan al recibir nuevos commits.
+- Los pushes a `main` tienen grupos por commit: un cambio de documentación no cancela ni sustituye una publicación pendiente.
 
 ## Pruebas y diagnósticos
 
@@ -54,7 +55,7 @@ El panel usa Node 24, PostgreSQL 17 temporal y datos ficticios.
 Las pruebas e2e compilan y arrancan Next.js en el puerto 4100.
 Los datos viven en esquemas aislados que se eliminan al terminar.
 La Function usa Node 22, igual que su entorno Azure.
-El contrato se prueba entre el productor y el normalizador del panel.
+El contrato se prueba entre el productor, el catálogo de columnas y el normalizador del panel.
 La web estática se prueba con `npm run test:site`, sin base de datos.
 
 El job IaC comprueba que PowerShell está disponible, compila todos los Bicep sin login y prueba
@@ -77,10 +78,15 @@ Las alertas de dependencias, actualizaciones de seguridad e informes privados es
 
 ## Publicación de GitHub Pages
 
-[`pages.yml`](workflows/pages.yml) es reutilizable desde CI y se puede lanzar manualmente.
-CI solo lo llama desde `main`, después del check **CI** correcto, si han cambiado la web o sus fuentes.
+[`pages.yml`](workflows/pages.yml) solo es reutilizable desde CI; no tiene un lanzamiento manual que evite las comprobaciones.
+CI lo llama desde `main`, después del check **CI** correcto.
 Una pull request, incluso de una rama del propio repositorio, nunca despliega.
-El lanzamiento manual también está restringido a `main`.
+Para publicar manualmente, lanza **Goliat - CI** en `main`: ejecutará primero todas las suites.
+
+Pages comprueba que el commit sigue siendo el último de `main` antes de publicar.
+La publicación ligera se solicita también tras cambios de documentación: así un commit posterior
+sin cambios de web no deja sin publicar una modificación de web anterior.
+Las suites pesadas siguen dependiendo solo de los archivos afectados.
 
 El workflow prepara `site/` con los diagramas Archify, la imagen social y los datos ficticios.
 No publica configuraciones locales, el backend ni el resto de `docs/`.

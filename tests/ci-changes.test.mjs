@@ -53,6 +53,12 @@ test('shared contracts and demo inputs validate every affected consumer', () => 
   assert.deepEqual(enabled(['docs/architecture.html']), ['dashboard', 'site', 'codeql']);
   assert.deepEqual(enabled(['public/social/cloud-inventory.png']), ['dashboard', 'site', 'codeql']);
   assert.deepEqual(enabled(['app/page.jsx']), ['dashboard', 'codeql']);
+  assert.deepEqual(enabled(['src/components/branding/ProviderMark/index.jsx']), [
+    'dashboard',
+    'site',
+    'codeql',
+  ]);
+  assert.deepEqual(enabled(['tests/inventory-catalog.test.mjs']), ['functions', 'codeql']);
 });
 
 test('dependency, workflow and unknown changes conservatively run every suite', () => {

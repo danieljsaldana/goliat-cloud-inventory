@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -78,7 +78,7 @@ jobs:
       - run: npm --prefix functions run check
       - run: npm --prefix functions test
       - name: Verify dashboard-collector contract
-        run: node --test tests/function-contract.test.mjs
+        run: node --test tests/function-contract.test.mjs tests/inventory-catalog.test.mjs
       - run: npm --prefix functions run package
 
   tests:
@@ -211,8 +211,8 @@ jobs:
           JS
 
   pages:
-    needs: [changes, ci]
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.changes.outputs.site == 'true'
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
       contents: read
       pages: write

@@ -2,18 +2,37 @@ name: Goliat - GitHub Pages
 
 on:
   workflow_call:
-  workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  current:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      latest: ${{ steps.revision.outputs.latest }}
+    steps:
+      - name: Check that this is the latest main revision
+        id: revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          latest=$(gh api "repos/$REPOSITORY/commits/main" --jq .sha)
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo 'latest=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'latest=false' >> "$GITHUB_OUTPUT"
+            echo "Skipping superseded revision $GITHUB_SHA; main is $latest."
+          fi
+  deploy:
+    needs: current
+    if: needs.current.outputs.latest == 'true'
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

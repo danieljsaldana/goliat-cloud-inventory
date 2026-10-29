@@ -30,7 +30,10 @@ export function classifyChanges(paths, { full = false } = {}) {
       selected.add('codeql');
       continue;
     }
-    if (path === 'tests/function-contract.test.mjs') {
+    if (
+      path === 'tests/function-contract.test.mjs' ||
+      path === 'tests/inventory-catalog.test.mjs'
+    ) {
       selected.add('functions');
       selected.add('codeql');
       continue;
@@ -40,6 +43,7 @@ export function classifyChanges(paths, { full = false } = {}) {
       selected.add('codeql');
       if (
         /^(src\/core\/|src\/features\/administration\/|server\/administration\/)/.test(path) ||
+        path === 'src/components/branding/ProviderMark/index.jsx' ||
         path === 'server/modules/azure/seed/data/inventory.json' ||
         path === 'public/social/cloud-inventory.png'
       )
