@@ -1,0 +1,19 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AZURE_AUTH_MODE": "default",
+    "AZURE_TENANT_ID": "<TENANT_ID>",
+    "AZURE_STORAGE_ACCOUNT_URL": "https://<ACCOUNT>.blob.core.windows.net/",
+    "AZURE_STORAGE_CONTAINER": "cloud-inventory",
+    "AZURE_STORAGE_BLOB": "azure/latest.json",
+    "AZURE_MAX_OBJECT_MB": "64",
+    "INVENTORY_SUBSCRIPTION_IDS": "<SUBSCRIPTION_ID>",
+    "INVENTORY_TAG_KEYS": "Environment,Project,Tier",
+    "INVENTORY_SCHEDULE": "0 0 2 * * *",
+    "AzureWebJobs.inventoryTimer.Disabled": "true",
+    "FUNCTION_API_AUDIENCE": "",
+    "FUNCTION_ALLOWED_CLIENT_IDS": ""
+  }
+}

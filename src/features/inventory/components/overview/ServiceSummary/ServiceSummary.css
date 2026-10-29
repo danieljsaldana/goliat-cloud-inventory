@@ -1,0 +1,110 @@
+.service-panel {
+  margin-top: 20px;
+  padding: 24px;
+}
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.service-item {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 12px 14px;
+  min-width: 0;
+  min-height: 6rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.service-item > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.service-item:hover,
+.service-item:focus-visible {
+  background: var(--hover-surface);
+  border-color: var(--hover-border);
+}
+.service-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--icon-surface);
+  border: 1px solid #c9e2f7;
+  color: var(--brand);
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.service-item:hover .service-icon,
+.service-item:focus-visible .service-icon {
+  background: var(--icon-surface-hover);
+  border-color: var(--hover-border);
+}
+.service-item:hover > svg,
+.service-item:focus-visible > svg {
+  color: var(--brand);
+}
+.service-item strong {
+  font-size: 1.125rem;
+  display: block;
+  font-weight: 500;
+  color: #526779;
+  line-height: 1.5;
+}
+.service-item-empty .service-icon {
+  background: #f1f6fb;
+  border-color: var(--line);
+  color: var(--muted-foreground);
+}
+.service-status {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+}
+.service-item div > span {
+  font-size: var(--text-sm);
+  display: block;
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+.service-item > svg {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  width: 12px;
+}
+@container dashboard (max-width: 60rem) {
+  .service-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@container dashboard (max-width: 45rem) {
+  .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container dashboard (max-width: 30rem) {
+  .service-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .service-panel {
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .service-item {
+    padding: 10px;
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "database": {
+    "create": true,
+    "location": "",
+    "host": "",
+    "port": 5432,
+    "name": "cloud_inventory",
+    "username": "goliat_admin",
+    "password": "",
+    "allowedIps": []
+  },
+  "authentication": {
+    "mode": "demo",
+    "username": "goliat",
+    "password": "",
+    "secret": "",
+    "clientId": "",
+    "clientSecret": "",
+    "clientSecretExpiresAt": "",
+    "tenantId": ""
+  },
+  "administration": {
+    "objectIds": [],
+    "membersEnabled": false
+  },
+  "inventory": {
+    "subscriptionIds": [],
+    "tagKeys": [],
+    "apiClientId": "",
+    "allowedClientIds": [],
+    "disableTimer": false,
+    "schedule": "0 0 2 * * *"
+  }
+}

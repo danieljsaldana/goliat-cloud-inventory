@@ -1,0 +1,27 @@
+.provider-mark {
+  width: 35px;
+  height: 35px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.provider-mark.azure {
+  background: #edf6ff;
+  border-color: #c9e2f7;
+  color: #0078d4;
+}
+.provider-mark svg {
+  width: 24px;
+  height: 24px;
+}
+.provider-mark.large {
+  width: 62px;
+  height: 62px;
+  border-radius: 14px;
+}
+.provider-mark.large svg {
+  width: 40px;
+  height: 40px;
+}

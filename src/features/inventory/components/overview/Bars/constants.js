@@ -1,0 +1,12 @@
+export const BAR_PAGE_SIZE = 5;
+export const BAR_PAGE_SIZES = [5, 8, 10];
+export const BAR_AXIS_WIDTH = 142;
+export const BAR_AXIS_TICK_MARGIN = 8;
+export const BAR_AXIS_LABEL_PADDING = 6;
+export const BAR_AXIS_LABEL_HEIGHT = 28;
+export const BAR_AXIS_MIN_WIDTH = 100;
+export const BAR_AXIS_MAX_WIDTH = 240;
+export const BAR_AXIS_WIDTH_RATIO = 0.45;
+export const BAR_ROW_HEIGHT = 44;
+export const BAR_ROW_GAP = 16;
+export const BAR_CHART_FOOTER_HEIGHT = 36;

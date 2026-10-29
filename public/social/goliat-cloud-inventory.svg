@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1730" height="909" viewBox="0 0 1730 909">
+  <rect width="1730" height="909" fill="#ffffff"/>
+  <path d="M1100 0H1730V909H1380L1030 560Z" fill="#16324f"/>
+  <circle cx="1490" cy="165" r="240" fill="#005a9e"/>
+  <circle cx="1690" cy="880" r="330" fill="#005a9e"/>
+  <g transform="translate(110 122) scale(1.84375)">
+  <path d="M16 39h-2a10 10 0 0 1-1-20 16 16 0 0 1 31-3 12 12 0 0 1 6 23h-2" fill="none" stroke="#0078d4" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m32 27 12 7-12 7-12-7z" fill="#50b4f2"/>
+  <path d="M20 34v13l12 7V41z" fill="#0078d4"/>
+  <path d="M44 34v13l-12 7V41z" fill="#005a9e"/>
+</g>
+  <g font-family="Arial, sans-serif">
+    <text x="110" y="423" fill="#005a9e" font-size="130" font-weight="600" letter-spacing="-4">Goliat</text>
+    <text x="117" y="506" fill="#0078d4" font-size="54" font-weight="700">Cloud Inventory</text>
+    <text x="117" y="607" fill="#526779" font-size="30">Resources. Subscriptions. Clarity.</text>
+    <rect x="115" y="687" width="306" height="64" rx="16" fill="#edf6ff"/>
+    <text x="144" y="730" fill="#005a9e" font-size="30" font-weight="700">Microsoft Azure</text>
+  </g>
+  <g fill="none" stroke="#9bd8ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1207 469h281a77 77 0 0 0 0-154 111 111 0 0 0-213-39 64 64 0 0 0-68 193Z"/>
+    <path d="M1350 469v71m-170 0h340m-340 0v59m170-59v59m170-59v59"/>
+    <rect x="1128" y="599" width="104" height="106" rx="22"/>
+    <rect x="1298" y="599" width="104" height="106" rx="22"/>
+    <rect x="1468" y="599" width="104" height="106" rx="22"/>
+    <path d="M1154 631h52m-52 27h34m138-14 24-18 24 18-24 18Z"/>
+    <ellipse cx="1520" cy="635" rx="27" ry="11"/>
+    <path d="M1493 635v33c0 15 54 15 54 0v-33"/>
+  </g>
+  <circle cx="1350" cy="375" r="15" fill="#50b4f2"/>
+</svg>

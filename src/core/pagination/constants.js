@@ -1,0 +1,2 @@
+export const PAGINATION_VISIBLE_PAGE_LIMIT = 7;
+export const PAGINATION_NEIGHBOR_RANGE = 3;

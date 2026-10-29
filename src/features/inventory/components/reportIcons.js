@@ -1,0 +1,33 @@
+import {
+  Activity,
+  Archive,
+  Boxes,
+  ChartNoAxesCombined,
+  Database,
+  FolderClosed,
+  Globe,
+  KeyRound,
+  Layers,
+  Network,
+  Server,
+  ShieldCheck,
+  Sparkles,
+  Tags,
+} from 'lucide-react';
+
+export const REPORT_ICONS = {
+  layers: Layers,
+  boxes: Boxes,
+  tags: Tags,
+  folder: FolderClosed,
+  server: Server,
+  network: Network,
+  globe: Globe,
+  database: Database,
+  sparkles: Sparkles,
+  chart: ChartNoAxesCombined,
+  shield: ShieldCheck,
+  key: KeyRound,
+  activity: Activity,
+  archive: Archive,
+};

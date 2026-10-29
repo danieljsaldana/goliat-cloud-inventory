@@ -1,0 +1,19 @@
+.header-scope {
+  margin-left: auto;
+  min-width: 0;
+  flex: 0 1 20rem;
+  width: 20rem;
+  max-width: 100%;
+}
+.header-scope .select-control {
+  color: var(--foreground);
+  width: 100%;
+}
+@media (max-width: 720px) {
+  .header-scope {
+    flex-basis: 100%;
+    width: 100%;
+    margin-top: 0;
+    max-width: 20rem;
+  }
+}

@@ -1,0 +1,2730 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Goliat — Your Azure, in perspective</title>
+    <meta
+      name="description"
+      content="Meet Goliat: an open-source Azure inventory and FinOps dashboard. Explore your resources, understand your costs, and keep control of your infrastructure."
+    />
+    <meta name="theme-color" content="#0078d4" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://danieljsaldana.github.io/goliat-cloud-inventory/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Goliat - Cloud Inventory" />
+    <meta property="og:url" content="https://danieljsaldana.github.io/goliat-cloud-inventory/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Goliat — Cloud Inventory" />
+    <meta
+      property="og:description"
+      content="Your Azure, in perspective. Open-source inventory and FinOps, in one place."
+    />
+    <meta
+      property="og:image"
+      content="https://danieljsaldana.github.io/goliat-cloud-inventory/assets/cloud-inventory.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1730" />
+    <meta property="og:image:height" content="909" />
+    <meta
+      property="og:image:alt"
+      content="Goliat - Cloud Inventory logo and an illustration of Azure cloud resources."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Goliat — Cloud Inventory" />
+    <meta
+      name="twitter:description"
+      content="Your Azure, in perspective. Open-source inventory and FinOps, in one place."
+    />
+    <meta
+      name="twitter:image"
+      content="https://danieljsaldana.github.io/goliat-cloud-inventory/assets/cloud-inventory.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Goliat - Cloud Inventory logo and an illustration of Azure cloud resources."
+    />
+    <style>
+      @font-face {
+        font-family: 'DM Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('assets/dm-sans-latin-400-normal.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'DM Sans';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('assets/dm-sans-latin-500-normal.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'DM Sans';
+        font-style: normal;
+        font-weight: 600;
+        font-display: swap;
+        src: url('assets/dm-sans-latin-600-normal.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'DM Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url('assets/dm-sans-latin-700-normal.woff2') format('woff2');
+      }
+      :root {
+        color-scheme: light;
+        --ink: #16324f;
+        --blue: #0078d4;
+        --blue-dark: #005a9e;
+        --sky: #50b4f2;
+        --muted: #526779;
+        --line: #dae6f0;
+        --soft: #f1f6fb;
+        --accent: #edf6ff;
+        --success: #267457;
+        --radius: 10px;
+        font-family:
+          'DM Sans',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        color: var(--ink);
+        background: #fff;
+        font-synthesis: none;
+        -webkit-font-smoothing: antialiased;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        line-height: 1.6;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 110px;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button:focus-visible,
+      a:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 4px;
+      }
+      [hidden],
+      [data-lang='en'] [lang='es'],
+      [data-lang='es'] [lang='en'] {
+        display: none !important;
+      }
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      .icon {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .symbols {
+        position: absolute;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      }
+      .container {
+        width: min(1160px, calc(100% - 64px));
+        margin-inline: auto;
+      }
+      .skip-link {
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        z-index: 100;
+        padding: 10px 16px;
+        background: white;
+        transform: translateY(-150%);
+      }
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-top: 3px solid var(--blue);
+        border-bottom: 1px solid var(--line);
+        background: #fffffff5;
+        backdrop-filter: blur(12px);
+      }
+      .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        height: 83px;
+      }
+      .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .brand img {
+        width: 106px;
+        height: auto;
+      }
+      .brand small {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.13em;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      .top-nav,
+      .header-actions,
+      .language,
+      .buttons {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .top-nav {
+        margin-left: auto;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .top-nav a {
+        padding: 10px 0;
+        color: var(--muted);
+        transition: color 150ms;
+      }
+      .top-nav a:hover {
+        color: var(--blue);
+      }
+      .header-actions {
+        gap: 18px;
+      }
+      .language {
+        gap: 2px;
+        padding: 3px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+      .language button {
+        min-height: 34px;
+        min-width: 35px;
+        padding: 4px 7px;
+        background: transparent;
+        border: 0;
+        border-radius: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .language button[aria-pressed='true'] {
+        background: #fff;
+        color: var(--blue-dark);
+        box-shadow: 0 1px 4px #16324f12;
+      }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 12px 20px;
+        min-height: 48px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        font-weight: 600;
+        transition:
+          background 160ms,
+          box-shadow 160ms;
+      }
+      .button:hover {
+        background: var(--soft);
+        box-shadow: 0 3px 8px #16324f0a;
+      }
+      .button.primary {
+        color: white;
+        background: var(--blue);
+        border-color: var(--blue);
+      }
+      .button.primary:hover {
+        background: var(--blue-dark);
+        border-color: var(--blue-dark);
+      }
+      .button.small {
+        min-height: 40px;
+        padding: 7px 13px;
+        font-size: 13px;
+      }
+      .hero-area {
+        background: radial-gradient(ellipse at 50% 42%, #edf6ff 0, #fff 70%);
+      }
+      .hero {
+        text-align: center;
+        padding: 68px 0 44px;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--blue-dark);
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+      }
+      .hero .eyebrow {
+        border: 1px solid #d2e7f8;
+        border-radius: 999px;
+        padding: 5px 12px;
+        background: #fff;
+        letter-spacing: 0;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        display: inline-block;
+        border-radius: 50%;
+        background: var(--blue);
+        flex-shrink: 0;
+      }
+      h1 {
+        font-size: clamp(42px, 5.3vw, 72px);
+        line-height: 1.08;
+        font-weight: 600;
+        letter-spacing: -0.055em;
+        margin: 23px 0 20px;
+      }
+      h1 em {
+        display: block;
+        color: var(--blue);
+        font-style: normal;
+      }
+      .hero-description {
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 640px;
+        margin: 0 auto;
+        line-height: 1.75;
+      }
+      .buttons {
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 27px;
+      }
+      .hero-note {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .preview {
+        margin: 0;
+        padding-bottom: 46px;
+      }
+      .preview-frame {
+        padding: 7px;
+        border: 1px solid #d6e6f3;
+        background: #edf4fa;
+        border-radius: 17px;
+        box-shadow:
+          0 24px 60px -28px #16324f45,
+          0 2px 5px #16324f05;
+      }
+      .dashboard {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: white;
+        overflow: hidden;
+        text-align: left;
+      }
+      .app-header {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        padding: 11px 23px;
+        border-top: 2px solid var(--blue);
+        border-bottom: 1px solid var(--line);
+      }
+      .app-brand {
+        width: 87px;
+        flex-shrink: 0;
+      }
+      .app-tabs {
+        display: flex;
+        gap: 8px;
+      }
+      .app-tabs button {
+        border: 0;
+        position: relative;
+        background: transparent;
+        padding: 14px 12px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .app-tabs button[aria-selected='true'] {
+        color: var(--blue);
+      }
+      .app-tabs button[aria-selected='true']::after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        left: 12px;
+        right: 12px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--blue);
+      }
+      .app-demo-label {
+        margin-left: auto;
+        font-size: 10px;
+        color: var(--muted);
+        border: 1px solid var(--line);
+        padding: 3px 8px;
+        border-radius: 5px;
+        white-space: nowrap;
+      }
+      .app-avatar {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        background: var(--accent);
+        color: var(--blue-dark);
+        border: 1px solid #d2e7f8;
+        border-radius: 50%;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .app-body {
+        display: grid;
+        grid-template-columns: 188px minmax(0, 1fr);
+      }
+      .app-body:has(#inventory-panel[hidden]) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .app-body:has(#inventory-panel[hidden]) .app-sidebar {
+        display: none;
+      }
+      .app-sidebar {
+        padding: 21px 13px;
+        border-right: 1px solid var(--line);
+        font-size: 11px;
+      }
+      .sidebar-provider {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 7px 18px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .provider-mark {
+        display: grid;
+        place-items: center;
+        width: 35px;
+        height: 35px;
+        flex-shrink: 0;
+        border: 1px solid #c9e2f7;
+        border-radius: 9px;
+        background: var(--accent);
+        color: var(--blue);
+      }
+      .provider-mark svg {
+        width: 24px;
+        height: 24px;
+      }
+      .hero .provider-mark {
+        width: 22px;
+        height: 22px;
+        border: 0;
+        background: transparent;
+      }
+      .hero .provider-mark svg {
+        width: 20px;
+        height: 20px;
+      }
+      .sidebar-caption {
+        padding: 15px 9px 8px;
+        font-size: 9px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .side-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px;
+        border-radius: 5px;
+        color: var(--muted);
+      }
+      .side-item .icon {
+        width: 15px;
+        height: 15px;
+      }
+      .side-item.active {
+        background: var(--accent);
+        box-shadow: inset 2px 0 var(--blue);
+        color: var(--blue);
+        font-weight: 500;
+      }
+      .side-count {
+        margin-left: auto;
+        background: var(--soft);
+        padding: 0 4px;
+        border-radius: 3px;
+        font-size: 10px;
+      }
+      .app-panel {
+        padding: 23px;
+        min-width: 0;
+        background: #f8fafc;
+      }
+      .app-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .app-breadcrumb .icon {
+        width: 11px;
+        height: 11px;
+      }
+      .app-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .app-heading h2 {
+        font-size: 22px;
+        line-height: 1.2;
+        letter-spacing: -0.035em;
+        margin: 0 0 5px;
+        font-weight: 600;
+      }
+      .app-heading p {
+        margin: 0;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .app-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 7px 9px;
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 5px;
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .app-filter .icon {
+        width: 12px;
+        height: 12px;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 11px;
+        margin-bottom: 14px;
+      }
+      .metric {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 12px;
+        position: relative;
+        min-width: 0;
+      }
+      .metric.accent::before {
+        content: '';
+        width: 3px;
+        position: absolute;
+        top: 13px;
+        bottom: 13px;
+        left: 0;
+        background: var(--blue);
+        border-radius: 0 3px 3px 0;
+      }
+      .metric-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .metric-label .icon {
+        width: 23px;
+        height: 23px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+      }
+      .metric.accent .icon {
+        background: var(--accent);
+        color: var(--blue);
+        border-color: #c9e2f7;
+      }
+      .metric strong {
+        display: block;
+        font-size: 26px;
+        font-weight: 500;
+        line-height: 1.4;
+        margin: 7px 0 3px;
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+      }
+      .metric small {
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .charts {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 14px;
+      }
+      .panel {
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: white;
+        min-width: 0;
+      }
+      .panel h3 {
+        margin: 0 0 3px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .panel-description {
+        margin: 0;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .bars {
+        display: grid;
+        gap: 12px;
+        margin: 21px 0 5px;
+      }
+      .bar-row {
+        display: grid;
+        grid-template-columns: 60px minmax(0, 1fr) 23px;
+        align-items: center;
+        gap: 10px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .bar-track {
+        height: 13px;
+        border-radius: 3px;
+        background: var(--soft);
+        overflow: hidden;
+      }
+      .bar-track i {
+        display: block;
+        height: 100%;
+        width: var(--value);
+        background: var(--blue);
+        border-radius: 3px;
+      }
+      .bar-row:nth-child(2) i {
+        background: #2864a6;
+      }
+      .bar-row:nth-child(3) i {
+        background: var(--sky);
+      }
+      .bar-row:nth-child(4) i {
+        background: #7b96c7;
+      }
+      .bar-row:nth-child(5) i {
+        background: var(--ink);
+      }
+      .bar-row b {
+        font-weight: 500;
+        color: var(--ink);
+        text-align: right;
+      }
+      .distribution {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 14px;
+        margin-top: 23px;
+      }
+      .donut {
+        width: 130px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: conic-gradient(
+          var(--blue) 0 48%,
+          white 48% 49%,
+          var(--ink) 49% 77%,
+          white 77% 78%,
+          var(--sky) 78% 99%,
+          white 99%
+        );
+        display: grid;
+        place-items: center;
+      }
+      .donut-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 89px;
+        height: 89px;
+        background: white;
+        border-radius: 50%;
+      }
+      .donut-center strong {
+        font-size: 25px;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+      .donut-center small {
+        font-size: 9px;
+        color: var(--muted);
+      }
+      .legend {
+        display: grid;
+        gap: 10px;
+        font-size: 9px;
+      }
+      .legend div {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .legend i {
+        width: 6px;
+        height: 6px;
+        background: var(--blue);
+        border-radius: 2px;
+      }
+      .legend div:nth-child(2) i {
+        background: var(--ink);
+      }
+      .legend div:nth-child(3) i {
+        background: var(--sky);
+      }
+      .legend b {
+        margin-left: auto;
+        padding-left: 5px;
+        font-weight: 500;
+      }
+      .resource-panel {
+        margin-top: 14px;
+        padding-bottom: 4px;
+      }
+      .table-scroll {
+        overflow: auto;
+        margin-top: 11px;
+      }
+      table {
+        width: 100%;
+        text-align: left;
+        border-collapse: collapse;
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      th {
+        font-weight: 500;
+        color: var(--muted);
+        background: #f8fafc;
+      }
+      th,
+      td {
+        border-bottom: 1px solid #eaf0f5;
+        padding: 9px 8px;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      .resource-name {
+        color: var(--blue-dark);
+        font-weight: 500;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 9px;
+        line-height: 1.5;
+        padding: 2px 7px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--soft);
+      }
+      .tag.green {
+        color: var(--success);
+        background: #eef8f2;
+        border-color: #d9ecdf;
+      }
+      .cost-summary {
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 14px;
+      }
+      .cost-total strong {
+        display: block;
+        font-size: 33px;
+        letter-spacing: -0.04em;
+        font-weight: 500;
+        line-height: 1.5;
+      }
+      .cost-detail {
+        display: flex;
+        gap: 28px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .cost-detail b {
+        display: block;
+        color: var(--ink);
+        font-size: 20px;
+        font-weight: 500;
+      }
+      .timeline {
+        width: 100%;
+        height: 142px;
+        margin-top: 18px;
+      }
+      .axis {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 9px;
+      }
+      .preview-caption {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 11px;
+        margin-top: 19px;
+      }
+      .preview-caption .icon {
+        width: 13px;
+        height: 13px;
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 26px 0;
+      }
+      .fact {
+        padding: 0 22px;
+        text-align: center;
+        border-right: 1px solid var(--line);
+      }
+      .fact:last-child {
+        border-right: 0;
+      }
+      .fact strong {
+        display: block;
+        font-size: 26px;
+        font-weight: 500;
+        letter-spacing: -0.04em;
+      }
+      .fact span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .section {
+        padding: 90px 0;
+      }
+      .section-title {
+        font-size: clamp(30px, 3.6vw, 44px);
+        line-height: 1.15;
+        letter-spacing: -0.045em;
+        font-weight: 500;
+        margin: 12px 0 16px;
+      }
+      .section-lead {
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--muted);
+        margin: 0;
+        max-width: 570px;
+      }
+      .section-heading {
+        margin-bottom: 35px;
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .feature-card {
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        overflow: hidden;
+        background: white;
+      }
+      .feature-copy {
+        padding: 28px 30px 25px;
+      }
+      .feature-icon {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid #cee2f3;
+        border-radius: 8px;
+        background: var(--accent);
+        color: var(--blue);
+        margin-bottom: 18px;
+      }
+      .feature-card h3,
+      .small-feature h3 {
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        margin: 0 0 8px;
+      }
+      .feature-card p,
+      .small-feature p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+      }
+      .feature-visual {
+        margin: 0 26px 25px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 17px;
+        background: #f8fafc;
+        min-height: 140px;
+      }
+      .visual-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 12px;
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+      .service-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .service-grid div {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 9px 8px;
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        font-size: 10px;
+      }
+      .service-grid .icon {
+        width: 14px;
+        height: 14px;
+        color: var(--blue);
+      }
+      .cost-mini {
+        display: grid;
+        gap: 10px;
+      }
+      .cost-mini .bar-row {
+        grid-template-columns: 90px minmax(0, 1fr) 42px;
+      }
+      .cost-mini .bar-track {
+        height: 10px;
+        background: #e6eef6;
+      }
+      .small-features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 36px;
+        margin-top: 36px;
+      }
+      .small-feature {
+        border-top: 1px solid var(--line);
+        padding-top: 24px;
+      }
+      .small-feature > .icon {
+        color: var(--blue);
+        margin-bottom: 14px;
+      }
+      .small-feature h3 {
+        font-size: 16px;
+      }
+      .architecture-section {
+        background: #f7fafd;
+        border-block: 1px solid var(--line);
+      }
+      .architecture-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 32px;
+        margin-bottom: 40px;
+      }
+      .text-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue-dark);
+      }
+      .text-link:hover {
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .text-link .icon {
+        width: 16px;
+        height: 16px;
+      }
+      .architecture-diagram {
+        margin: 0;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px #16324f08;
+      }
+      .architecture-diagram figcaption {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .architecture-diagram a {
+        color: var(--blue-dark);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .architecture-diagram iframe {
+        display: block;
+        width: 100%;
+        height: 680px;
+        border: 0;
+      }
+      .diagram-select {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-width: 0;
+        max-width: 100%;
+      }
+      .diagram-select select {
+        width: 220px;
+        max-width: 100%;
+        min-height: 38px;
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+      }
+      .diagram-select select:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 2px;
+      }
+      @media (max-width: 540px) {
+        .diagram-select select {
+          min-height: 44px;
+          font-size: 16px;
+        }
+      }
+      .diagram-help {
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.7;
+      }
+      .architecture-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        margin: 26px 0 0;
+      }
+      .architecture-note .icon {
+        width: 16px;
+        height: 16px;
+        color: var(--blue);
+      }
+      .start-layout {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 70px;
+        align-items: center;
+      }
+      .requirements {
+        list-style: none;
+        padding: 0;
+        margin: 24px 0;
+        display: grid;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .requirements li {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .requirements .icon {
+        width: 15px;
+        height: 15px;
+        color: var(--blue);
+      }
+      .terminal {
+        background: #122c46;
+        color: #e5f2fd;
+        border: 1px solid var(--ink);
+        border-radius: 11px;
+        overflow: hidden;
+        min-width: 0;
+        box-shadow: 0 20px 35px -24px #16324f55;
+      }
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        border-bottom: 1px solid #ffffff17;
+        padding: 13px 18px;
+        background: #183650;
+      }
+      .terminal-header i {
+        width: 7px;
+        height: 7px;
+        background: #67829a;
+        border-radius: 50%;
+      }
+      .terminal-header span {
+        margin-left: auto;
+        font-size: 11px;
+        color: #c5d7e6;
+      }
+      pre {
+        margin: 0;
+        padding: 22px;
+        font:
+          12px/2 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        overflow: auto;
+      }
+      pre .comment {
+        color: #9bb6ce;
+      }
+      pre .prompt {
+        color: #50b4f2;
+        user-select: none;
+      }
+      .terminal-note {
+        padding: 12px 22px;
+        background: #183650;
+        font-size: 11px;
+        color: #c5d7e6;
+        border-top: 1px solid #ffffff17;
+      }
+      .terminal-note strong {
+        color: #fff;
+        font-weight: 500;
+      }
+      .closing {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 32px;
+        padding: 34px 0;
+        border-top: 1px solid var(--line);
+      }
+      .closing h2 {
+        margin: 0 0 5px;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: -0.025em;
+      }
+      .closing p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .closing .button {
+        flex-shrink: 0;
+      }
+      footer {
+        background: #f8fafc;
+        border-top: 1px solid var(--line);
+        padding: 27px 0;
+      }
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .footer-brand img {
+        width: 25px;
+        height: 25px;
+      }
+      footer nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      footer a:hover {
+        color: var(--blue);
+      }
+      .independent {
+        margin: 15px auto 0;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      @media (max-width: 1050px) {
+        .distribution {
+          flex-direction: column;
+          margin-top: 16px;
+          gap: 11px;
+        }
+        .legend {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 8px;
+        }
+        .legend b {
+          display: none;
+        }
+        .donut {
+          width: 112px;
+        }
+        .donut-center {
+          width: 76px;
+          height: 76px;
+        }
+        .start-layout {
+          gap: 35px;
+        }
+      }
+      @media (max-width: 800px) {
+        .container {
+          width: calc(100% - 40px);
+        }
+        .top-nav {
+          display: none;
+        }
+        .hero {
+          padding-top: 45px;
+        }
+        .hero-description {
+          font-size: 16px;
+        }
+        .app-sidebar {
+          display: none;
+        }
+        .app-body {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .app-panel {
+          padding: 18px;
+        }
+        .section {
+          padding: 60px 0;
+        }
+        .small-features {
+          gap: 20px;
+        }
+        .feature-copy {
+          padding: 22px;
+        }
+        .feature-visual {
+          margin: 0 18px 18px;
+          padding: 13px;
+        }
+        .service-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .architecture-heading {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .start-layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      @media (max-width: 540px) {
+        html {
+          scroll-padding-top: 90px;
+        }
+        .container {
+          width: calc(100% - 32px);
+        }
+        .header-inner {
+          height: 71px;
+          gap: 12px;
+        }
+        .brand img {
+          width: 92px;
+        }
+        .brand small {
+          font-size: 8px;
+        }
+        .header-actions {
+          gap: 9px;
+        }
+        .header-actions .button {
+          padding: 8px;
+          min-width: 38px;
+        }
+        .header-actions .button span {
+          display: none;
+        }
+        .language button {
+          min-width: 30px;
+        }
+        .hero {
+          padding: 35px 0 30px;
+        }
+        h1 {
+          font-size: 43px;
+        }
+        .hero-description {
+          font-size: 15px;
+          line-height: 1.7;
+        }
+        .hero .button {
+          font-size: 12px;
+          padding: 11px 13px;
+        }
+        .hero-note {
+          font-size: 11px;
+        }
+        .preview {
+          padding-bottom: 30px;
+        }
+        .preview-frame {
+          padding: 4px;
+          border-radius: 12px;
+        }
+        .app-header {
+          padding: 9px 12px;
+          gap: 11px;
+          flex-wrap: wrap;
+        }
+        .app-brand {
+          width: 68px;
+        }
+        .app-tabs {
+          gap: 0;
+          margin-left: auto;
+        }
+        .app-tabs button {
+          font-size: 11px;
+          padding: 12px 9px;
+        }
+        .app-demo-label,
+        .app-avatar {
+          display: none;
+        }
+        .app-panel {
+          padding: 13px;
+        }
+        .app-heading {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 9px;
+        }
+        .app-heading h2 {
+          font-size: 20px;
+        }
+        .metrics {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+        }
+        .metric {
+          padding: 11px;
+        }
+        .metric strong {
+          font-size: 24px;
+        }
+        .metric small {
+          font-size: 9px;
+        }
+        .charts {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 10px;
+        }
+        .panel {
+          padding: 14px;
+        }
+        .distribution {
+          flex-direction: row;
+          margin: 15px 0 2px;
+        }
+        .legend {
+          display: grid;
+        }
+        .legend b {
+          display: block;
+        }
+        .resource-panel {
+          margin-top: 10px;
+        }
+        .cost-summary {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .cost-total strong {
+          font-size: 30px;
+        }
+        .cost-detail {
+          gap: 24px;
+        }
+        .preview-caption {
+          font-size: 10px;
+          line-height: 1.6;
+        }
+        .facts {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 22px 0;
+          padding: 23px 0;
+        }
+        .fact:nth-child(2) {
+          border-right: 0;
+        }
+        .fact strong {
+          font-size: 25px;
+        }
+        .fact span {
+          font-size: 11px;
+        }
+        .section {
+          padding: 48px 0;
+        }
+        .section-title {
+          font-size: 32px;
+        }
+        .section-lead {
+          font-size: 14px;
+        }
+        .feature-grid,
+        .small-features {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .small-features {
+          gap: 24px;
+          margin-top: 26px;
+        }
+        .service-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .service-grid div {
+          font-size: 9px;
+          padding: 8px 5px;
+          gap: 4px;
+        }
+        .architecture-diagram iframe {
+          height: 620px;
+        }
+        .architecture-note {
+          align-items: flex-start;
+          text-align: left;
+        }
+        .closing {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 18px;
+          padding: 26px 0;
+        }
+        .footer-inner {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 17px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="demo.css" />
+    <link rel="stylesheet" href="admin-demo.css" />
+  </head>
+  <body>
+    <svg class="symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="i-refresh" viewBox="0 0 24 24">
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+          <path d="M21 3v5h-5" />
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+          <path d="M8 16H3v5" />
+        </symbol>
+        <symbol id="i-activity" viewBox="0 0 24 24">
+          <path d="M2 12h5l3-8 4 16 3-8h5" />
+        </symbol>
+        <symbol id="i-cpu" viewBox="0 0 24 24">
+          <rect x="5" y="5" width="14" height="14" rx="2" />
+          <rect x="9" y="9" width="6" height="6" />
+          <path d="M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3" />
+        </symbol>
+        <symbol id="i-memory" viewBox="0 0 24 24">
+          <rect x="2" y="6" width="20" height="12" rx="2" />
+          <path d="M6 10h3v4H6zm9 0h3v4h-3zM6 18v3m4-3v3m4-3v3m4-3v3" />
+        </symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" /></symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          <rect x="14" y="14" width="7" height="7" rx="1.5" />
+        </symbol>
+        <symbol id="i-azure" viewBox="0 0 40 40">
+          <path fill="currentColor" d="M16 5 3 28h9L25 5zM27 12 17 29l11 2H12l-3 5h28z" />
+        </symbol>
+        <symbol id="i-server" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="7" rx="2" />
+          <rect x="3" y="14" width="18" height="7" rx="2" />
+          <path d="M7 6.5h.01M7 17.5h.01M12 6.5h5M12 17.5h5" />
+        </symbol>
+        <symbol id="i-network" viewBox="0 0 24 24">
+          <rect x="9" y="3" width="6" height="5" rx="1" />
+          <rect x="2" y="16" width="6" height="5" rx="1" />
+          <rect x="16" y="16" width="6" height="5" rx="1" />
+          <path d="M12 8v4H5v4m7-4h7v4" />
+        </symbol>
+        <symbol id="i-database" viewBox="0 0 24 24">
+          <ellipse cx="12" cy="5" rx="8" ry="3" />
+          <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" />
+        </symbol>
+        <symbol id="i-box" viewBox="0 0 24 24">
+          <path d="m12 3 9 5-9 5-9-5 9-5Zm-9 5v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5" />
+        </symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-5 4 3 5-7" /></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 4-4 7-8 9-4-2-8-5-8-9V6l8-3Z" />
+          <path d="m8 12 3 3 5-6" />
+        </symbol>
+        <symbol id="i-tag" viewBox="0 0 24 24">
+          <path d="M3 3h8l10 10-8 8L3 11V3Z" />
+          <circle cx="7.5" cy="7.5" r="1" />
+        </symbol>
+        <symbol id="i-search" viewBox="0 0 24 24">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 5 5" />
+        </symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24">
+          <path d="m12 3 10 5-10 5L2 8l10-5ZM2 12l10 5 10-5M2 16l10 5 10-5" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24">
+          <path d="m7 6-6 6 6 6m10-12 6 6-6 6M14 3l-4 18" />
+        </symbol>
+        <symbol id="i-sliders" viewBox="0 0 24 24">
+          <path d="M4 7h9m4 0h3M4 17h3m4 0h9" />
+          <circle cx="15" cy="7" r="2" />
+          <circle cx="9" cy="17" r="2" />
+        </symbol>
+        <symbol id="i-github" viewBox="0 0 24 24">
+          <path
+            d="M9 19c-4 1-4-2-6-2m12 5v-4a3.4 3.4 0 0 0-1-2.5c3.3-.4 6.7-1.6 6.7-7.2a5.6 5.6 0 0 0-1.5-3.9A5.1 5.1 0 0 0 19 1S17.7.6 15 2.5a13.4 13.4 0 0 0-6 0C6.3.6 5 1 5 1a5.1 5.1 0 0 0-.2 3.4 5.6 5.6 0 0 0-1.5 3.9c0 5.6 3.4 6.8 6.7 7.2A3.4 3.4 0 0 0 9 18v4"
+          />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#main"
+      ><span lang="en">Skip to content</span><span lang="es">Saltar al contenido</span></a
+    >
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#main" aria-label="Goliat — Cloud Inventory"
+          ><img src="assets/goliat-logo.svg" width="202" height="64" alt="Goliat" /><small
+            >Cloud Inventory</small
+          ></a
+        >
+        <nav class="top-nav" aria-label="Navigation">
+          <a href="#features"><span lang="en">Product</span><span lang="es">Producto</span></a>
+          <a href="#how"><span lang="en">Architecture</span><span lang="es">Arquitectura</span></a>
+          <a href="#start"><span lang="en">Get started</span><span lang="es">Empezar</span></a>
+        </nav>
+        <div class="header-actions">
+          <div class="language" role="group" aria-label="Language / Idioma">
+            <button type="button" data-set-lang="en" aria-pressed="true" aria-label="English">
+              EN
+            </button>
+            <button type="button" data-set-lang="es" aria-pressed="false" aria-label="Español">
+              ES
+            </button>
+          </div>
+          <a
+            class="button small"
+            href="https://github.com/danieljsaldana/goliat-cloud-inventory"
+            aria-label="GitHub"
+            ><svg class="icon" aria-hidden="true"><use href="#i-github" /></svg
+            ><span>GitHub</span></a
+          >
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <div class="hero-area">
+        <div class="container">
+          <section class="hero" aria-labelledby="hero-title">
+            <div class="eyebrow">
+              <span class="provider-mark" aria-hidden="true"
+                ><svg><use href="#i-azure" /></svg></span
+              >Microsoft Azure<span aria-hidden="true">·</span
+              ><span lang="en">Inventory &amp; FinOps</span
+              ><span lang="es">Inventario y FinOps</span>
+            </div>
+            <h1 id="hero-title">
+              <span lang="en">Your Azure inventory.<em>A clearer picture.</em></span
+              ><span lang="es">Tu inventario Azure.<em>Claro y bajo control.</em></span>
+            </h1>
+            <p class="hero-description">
+              <span lang="en"
+                >Explore resources across your subscriptions and understand your Azure costs. An
+                open-source dashboard that you deploy and manage in your own environment.</span
+              ><span lang="es"
+                >Explora los recursos de tus suscripciones y entiende tus costes de Azure. Un
+                dashboard de código abierto que despliegas y gestionas en tu propio entorno.</span
+              >
+            </p>
+            <div class="buttons">
+              <a class="button primary" href="#preview"
+                ><svg class="icon" aria-hidden="true"><use href="#i-grid" /></svg
+                ><span lang="en">Explore the preview</span
+                ><span lang="es">Explorar la vista previa</span></a
+              >
+              <a class="button" href="https://github.com/danieljsaldana/goliat-cloud-inventory"
+                ><svg class="icon" aria-hidden="true"><use href="#i-github" /></svg
+                ><span lang="en">View source</span><span lang="es">Ver el código</span></a
+              >
+            </div>
+            <p class="hero-note">
+              <span lang="en">Self-hosted. MIT licensed. In English and Spanish.</span
+              ><span lang="es">Autoalojado. Licencia MIT. En español e inglés.</span>
+            </p>
+          </section>
+          <figure class="preview" id="preview" aria-describedby="preview-caption">
+            <div class="preview-frame">
+              <div class="dashboard">
+                <div class="app-header">
+                  <img
+                    class="app-brand"
+                    src="assets/goliat-logo.svg"
+                    width="202"
+                    height="64"
+                    alt="Goliat"
+                  />
+                  <div
+                    class="app-tabs"
+                    role="tablist"
+                    aria-label="Dashboard preview / Vista previa"
+                  >
+                    <button
+                      type="button"
+                      id="inventory-tab"
+                      role="tab"
+                      aria-selected="true"
+                      aria-controls="inventory-panel"
+                      tabindex="0"
+                    >
+                      <span lang="en">Inventory</span><span lang="es">Inventario</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="finops-tab"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="finops-panel"
+                      tabindex="-1"
+                    >
+                      FinOps
+                    </button>
+                    <button
+                      type="button"
+                      id="users-tab"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="users-panel"
+                      tabindex="-1"
+                    >
+                      <span lang="en">Users</span><span lang="es">Usuarios</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="admin-tab"
+                      role="tab"
+                      aria-selected="false"
+                      aria-controls="admin-panel"
+                      tabindex="-1"
+                    >
+                      Admin
+                    </button>
+                  </div>
+                  <span class="app-demo-label"
+                    ><span lang="en">Illustrative preview</span
+                    ><span lang="es">Vista ilustrativa</span></span
+                  >
+                  <span class="app-avatar" aria-hidden="true">GC</span>
+                </div>
+                <div class="app-body">
+                  <div class="app-sidebar" aria-hidden="true">
+                    <div class="sidebar-provider">
+                      <span class="provider-mark"
+                        ><svg><use href="#i-azure" /></svg></span
+                      >Microsoft Azure
+                    </div>
+                    <div class="side-item active">
+                      <svg class="icon"><use href="#i-grid" /></svg><span lang="en">Overview</span
+                      ><span lang="es">Resumen</span>
+                    </div>
+                    <div class="sidebar-caption">
+                      <span lang="en">Inventory</span><span lang="es">Inventario</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-layers" /></svg
+                      ><span lang="en">Subscriptions</span><span lang="es">Suscripciones</span
+                      ><span class="side-count">5</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-box" /></svg
+                      ><span lang="en">All resources</span><span lang="es">Todos los recursos</span
+                      ><span class="side-count">214</span>
+                    </div>
+                    <div class="sidebar-caption">
+                      <span lang="en">Services</span><span lang="es">Servicios</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-server" /></svg><span lang="en">Compute</span
+                      ><span lang="es">Cómputo</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-box" /></svg><span lang="en">Containers</span
+                      ><span lang="es">Contenedores</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-code" /></svg>Web &amp; APIs
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-network" /></svg
+                      ><span lang="en">Networking</span><span lang="es">Red</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-database" /></svg
+                      ><span lang="en">Databases</span><span lang="es">Bases de datos</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-shield" /></svg><span lang="en">Security</span
+                      ><span lang="es">Seguridad</span>
+                    </div>
+                    <div class="side-item">
+                      <svg class="icon"><use href="#i-tag" /></svg><span lang="en">Tags</span
+                      ><span lang="es">Etiquetas</span>
+                    </div>
+                  </div>
+                  <div
+                    class="app-panel"
+                    id="inventory-panel"
+                    role="tabpanel"
+                    aria-labelledby="inventory-tab"
+                    tabindex="0"
+                  >
+                    <div class="app-breadcrumb">
+                      Microsoft Azure<svg class="icon" aria-hidden="true">
+                        <use href="#i-chevron" /></svg
+                      ><span lang="en">Inventory</span><span lang="es">Inventario</span>
+                    </div>
+                    <div class="app-heading">
+                      <div>
+                        <h2>
+                          <span lang="en">Inventory overview</span
+                          ><span lang="es">Resumen del inventario</span>
+                        </h2>
+                        <p>
+                          <span lang="en">A complete view of your Azure resources.</span
+                          ><span lang="es">Una visión conjunta de tus recursos en Azure.</span>
+                        </p>
+                      </div>
+                      <span class="app-filter"
+                        ><svg class="icon" aria-hidden="true"><use href="#i-layers" /></svg
+                        ><span lang="en">All subscriptions</span
+                        ><span lang="es">Todas las suscripciones</span></span
+                      >
+                    </div>
+                    <div class="metrics">
+                      <div class="metric accent">
+                        <div class="metric-label">
+                          <span lang="en">Total resources</span
+                          ><span lang="es">Recursos totales</span
+                          ><svg class="icon" aria-hidden="true"><use href="#i-box" /></svg>
+                        </div>
+                        <strong>214</strong
+                        ><small
+                          ><span lang="en">Selected inventory</span
+                          ><span lang="es">Inventario seleccionado</span></small
+                        >
+                      </div>
+                      <div class="metric">
+                        <div class="metric-label">
+                          <span lang="en">Providers</span><span lang="es">Proveedores</span
+                          ><svg class="icon" aria-hidden="true"><use href="#i-grid" /></svg>
+                        </div>
+                        <strong>5</strong><small>Azure Resource Manager</small>
+                      </div>
+                      <div class="metric">
+                        <div class="metric-label">
+                          <span lang="en">Subscriptions</span><span lang="es">Suscripciones</span
+                          ><svg class="icon" aria-hidden="true"><use href="#i-layers" /></svg>
+                        </div>
+                        <strong>5</strong
+                        ><small
+                          ><span lang="en">Across your environments</span
+                          ><span lang="es">Todos tus entornos</span></small
+                        >
+                      </div>
+                      <div class="metric">
+                        <div class="metric-label">
+                          <span lang="en">Tag coverage</span
+                          ><span lang="es">Cobertura de etiquetas</span
+                          ><svg class="icon" aria-hidden="true"><use href="#i-tag" /></svg>
+                        </div>
+                        <strong>92%</strong
+                        ><small
+                          ><span lang="en">197 tagged resources</span
+                          ><span lang="es">197 recursos etiquetados</span></small
+                        >
+                      </div>
+                    </div>
+                    <div class="charts">
+                      <div class="panel">
+                        <h3>
+                          <span lang="en">Resources by provider</span
+                          ><span lang="es">Recursos por proveedor</span>
+                        </h3>
+                        <p class="panel-description">
+                          <span lang="en">Distribution of your inventory</span
+                          ><span lang="es">Distribución del inventario</span>
+                        </p>
+                        <div class="bars">
+                          <div class="bar-row">
+                            <span>Compute</span>
+                            <div class="bar-track"><i style="--value: 90%"></i></div>
+                            <b>72</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>Network</span>
+                            <div class="bar-track"><i style="--value: 72.5%"></i></div>
+                            <b>58</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>Storage</span>
+                            <div class="bar-track"><i style="--value: 57.5%"></i></div>
+                            <b>46</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>Web</span>
+                            <div class="bar-track"><i style="--value: 30%"></i></div>
+                            <b>24</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>SQL</span>
+                            <div class="bar-track"><i style="--value: 17.5%"></i></div>
+                            <b>14</b>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="panel">
+                        <h3>
+                          <span lang="en">Resources by location</span
+                          ><span lang="es">Recursos por ubicación</span>
+                        </h3>
+                        <p class="panel-description">
+                          <span lang="en">Where your infrastructure lives</span
+                          ><span lang="es">Dónde está tu infraestructura</span>
+                        </p>
+                        <div class="distribution">
+                          <div class="donut" aria-hidden="true">
+                            <div class="donut-center">
+                              <strong>214</strong
+                              ><small
+                                ><span lang="en">resources</span
+                                ><span lang="es">recursos</span></small
+                              >
+                            </div>
+                          </div>
+                          <div class="legend">
+                            <div><i></i>West Europe<b>48%</b></div>
+                            <div><i></i>North Europe<b>29%</b></div>
+                            <div><i></i>East US<b>23%</b></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel resource-panel">
+                      <h3>
+                        <span lang="en">Resource detail</span
+                        ><span lang="es">Detalle de recursos</span>
+                      </h3>
+                      <div
+                        class="table-scroll"
+                        tabindex="0"
+                        role="region"
+                        aria-label="Resources / Recursos"
+                      >
+                        <table>
+                          <thead>
+                            <tr>
+                              <th scope="col">
+                                <span lang="en">Name</span><span lang="es">Nombre</span>
+                              </th>
+                              <th scope="col">
+                                <span lang="en">Service</span><span lang="es">Servicio</span>
+                              </th>
+                              <th scope="col">
+                                <span lang="en">Location</span><span lang="es">Ubicación</span>
+                              </th>
+                              <th scope="col">Environment</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="resource-name">vm-demo-app-01</td>
+                              <td>Virtual Machine</td>
+                              <td>West Europe</td>
+                              <td><span class="tag">demo</span></td>
+                            </tr>
+                            <tr>
+                              <td class="resource-name">st-demo-inventory</td>
+                              <td>Storage Account</td>
+                              <td>West Europe</td>
+                              <td><span class="tag">demo</span></td>
+                            </tr>
+                            <tr>
+                              <td class="resource-name">pg-demo-catalog</td>
+                              <td>PostgreSQL</td>
+                              <td>North Europe</td>
+                              <td><span class="tag">demo</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="app-panel"
+                    id="finops-panel"
+                    role="tabpanel"
+                    aria-labelledby="finops-tab"
+                    tabindex="0"
+                    hidden
+                  >
+                    <div class="app-breadcrumb">
+                      Microsoft Azure<svg class="icon" aria-hidden="true">
+                        <use href="#i-chevron" /></svg
+                      >FinOps
+                    </div>
+                    <div class="app-heading">
+                      <div>
+                        <h2>
+                          <span lang="en">Understand your Azure spend</span
+                          ><span lang="es">Entiende tu gasto en Azure</span>
+                        </h2>
+                        <p>
+                          <span lang="en">Illustrative costs, not connected to Azure.</span
+                          ><span lang="es">Costes ficticios, sin conexión a Azure.</span>
+                        </p>
+                      </div>
+                      <span class="app-filter"
+                        ><span lang="en">October · Actual cost · EUR</span
+                        ><span lang="es">Octubre · Coste real · EUR</span></span
+                      >
+                    </div>
+                    <div class="panel cost-summary">
+                      <div class="cost-total">
+                        <h3><span lang="en">Total cost</span><span lang="es">Coste total</span></h3>
+                        <strong
+                          ><span lang="en">€1,284.6</span><span lang="es">1.284,6 €</span></strong
+                        >
+                        <p class="panel-description">
+                          <span lang="en">Before tax · fictional example</span
+                          ><span lang="es">Sin impuestos · ejemplo ficticio</span>
+                        </p>
+                      </div>
+                      <div class="cost-detail">
+                        <div>
+                          <span lang="en">Services</span><span lang="es">Servicios</span><b>5</b>
+                        </div>
+                        <div>
+                          <span lang="en">Subscriptions</span><span lang="es">Suscripciones</span
+                          ><b>5 / 5</b>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="charts">
+                      <div class="panel">
+                        <h3>
+                          <span lang="en">Daily cost</span><span lang="es">Coste diario</span>
+                        </h3>
+                        <p class="panel-description">
+                          <span lang="en">Illustrative trend for the selected month</span
+                          ><span lang="es">Tendencia ilustrativa del mes seleccionado</span>
+                        </p>
+                        <svg
+                          class="timeline"
+                          viewBox="0 0 360 142"
+                          preserveAspectRatio="none"
+                          aria-hidden="true"
+                        >
+                          <defs>
+                            <linearGradient id="area-fill" x1="0" x2="0" y1="0" y2="1">
+                              <stop offset="0%" stop-color="#0078d4" stop-opacity=".18" />
+                              <stop offset="100%" stop-color="#0078d4" stop-opacity=".01" />
+                            </linearGradient>
+                          </defs>
+                          <path
+                            d="M0 22h360M0 62h360M0 102h360"
+                            stroke="#e8eef5"
+                            stroke-dasharray="3 4"
+                            fill="none"
+                          />
+                          <path
+                            d="M0 101 12 90 24 96 36 67 48 77 60 71 72 90 84 80 96 85 108 47 120 54 132 73 144 65 156 80 168 51 180 66 192 48 204 54 216 33 228 49 240 53 252 66 264 38 276 29 288 48 300 34 312 42 324 24 336 37 348 18 360 27V142H0Z"
+                            fill="url(#area-fill)"
+                          />
+                          <path
+                            d="M0 101 12 90 24 96 36 67 48 77 60 71 72 90 84 80 96 85 108 47 120 54 132 73 144 65 156 80 168 51 180 66 192 48 204 54 216 33 228 49 240 53 252 66 264 38 276 29 288 48 300 34 312 42 324 24 336 37 348 18 360 27"
+                            fill="none"
+                            stroke="#0078d4"
+                            stroke-width="2"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                        <div class="axis">
+                          <span>01</span><span>08</span><span>15</span><span>22</span
+                          ><span>31</span>
+                        </div>
+                      </div>
+                      <div class="panel">
+                        <h3>
+                          <span lang="en">Cost by service</span
+                          ><span lang="es">Coste por servicio</span>
+                        </h3>
+                        <p class="panel-description">
+                          <span lang="en">Share of total spend</span
+                          ><span lang="es">Distribución del gasto total</span>
+                        </p>
+                        <div class="bars">
+                          <div class="bar-row">
+                            <span>Compute</span>
+                            <div class="bar-track"><i style="--value: 90%"></i></div>
+                            <b>42%</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>SQL</span>
+                            <div class="bar-track"><i style="--value: 60%"></i></div>
+                            <b>28%</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>Storage</span>
+                            <div class="bar-track"><i style="--value: 38.6%"></i></div>
+                            <b>18%</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>Network</span>
+                            <div class="bar-track"><i style="--value: 17.1%"></i></div>
+                            <b>8%</b>
+                          </div>
+                          <div class="bar-row">
+                            <span>Web</span>
+                            <div class="bar-track"><i style="--value: 8.6%"></i></div>
+                            <b>4%</b>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel resource-panel">
+                      <h3>
+                        <span lang="en">Costs with context</span
+                        ><span lang="es">Costes con contexto</span>
+                      </h3>
+                      <div
+                        class="table-scroll"
+                        tabindex="0"
+                        role="region"
+                        aria-label="Cost status / Estado de costes"
+                      >
+                        <table>
+                          <thead>
+                            <tr>
+                              <th scope="col">
+                                <span lang="en">Subscription</span
+                                ><span lang="es">Suscripción</span>
+                              </th>
+                              <th scope="col">
+                                <span lang="en">Currency</span><span lang="es">Moneda</span>
+                              </th>
+                              <th scope="col">
+                                <span lang="en">Status</span><span lang="es">Estado</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="resource-name">Demo — Production</td>
+                              <td>EUR</td>
+                              <td>
+                                <span class="tag green"
+                                  ><span lang="en">Available</span
+                                  ><span lang="es">Disponible</span></span
+                                >
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="resource-name">Demo — Development</td>
+                              <td>EUR</td>
+                              <td>
+                                <span class="tag green"
+                                  ><span lang="en">Available</span
+                                  ><span lang="es">Disponible</span></span
+                                >
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="resource-name">Demo — Shared</td>
+                              <td>EUR</td>
+                              <td>
+                                <span class="tag green"
+                                  ><span lang="en">Available</span
+                                  ><span lang="es">Disponible</span></span
+                                >
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="app-panel"
+                    id="users-panel"
+                    role="tabpanel"
+                    aria-labelledby="users-tab"
+                    tabindex="0"
+                    hidden
+                  >
+                    <h2><span lang="en">Users</span><span lang="es">Usuarios</span></h2>
+                    <p>
+                      <span lang="en">Fictional accounts and local role changes only.</span
+                      ><span lang="es">Solo cuentas ficticias y cambios locales de roles.</span>
+                    </p>
+                  </div>
+                  <div
+                    class="app-panel"
+                    id="admin-panel"
+                    role="tabpanel"
+                    aria-labelledby="admin-tab"
+                    tabindex="0"
+                    hidden
+                  >
+                    <h2>
+                      <span lang="en">Administration</span><span lang="es">Administración</span>
+                    </h2>
+                    <p>
+                      <span lang="en">Simulated collector metrics and settings.</span
+                      ><span lang="es">Métricas y configuración simuladas del colector.</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <figcaption class="preview-caption" id="preview-caption">
+              <svg class="icon" aria-hidden="true"><use href="#i-grid" /></svg
+              ><span lang="en"
+                >Explore inventory, costs, users and administration. All data and changes are
+                simulated locally.</span
+              ><span lang="es"
+                >Explora inventario, costes, usuarios y administración. Todos los datos y cambios
+                son simulados en el navegador.</span
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="container">
+        <div class="facts">
+          <div class="fact">
+            <strong>73</strong><span lang="en">inventory views</span
+            ><span lang="es">vistas de inventario</span>
+          </div>
+          <div class="fact">
+            <strong>12</strong><span lang="en">Azure service groups</span
+            ><span lang="es">grupos de servicios Azure</span>
+          </div>
+          <div class="fact">
+            <strong>ES + EN</strong><span lang="en">one bilingual experience</span
+            ><span lang="es">una experiencia bilingüe</span>
+          </div>
+          <div class="fact">
+            <strong>100%</strong><span lang="en">open-source code</span
+            ><span lang="es">código abierto</span>
+          </div>
+        </div>
+      </div>
+      <section class="section" id="features">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow"
+              ><span lang="en">LESS SEARCHING. MORE UNDERSTANDING.</span
+              ><span lang="es">MENOS BUSCAR. MÁS ENTENDER.</span></span
+            >
+            <h2 class="section-title">
+              <span lang="en">The big picture.<br />And every little detail.</span
+              ><span lang="es">La visión global.<br />Y cada pequeño detalle.</span>
+            </h2>
+            <p class="section-lead">
+              <span lang="en"
+                >From a subscription overview to a single resource. Everything connected, without
+                jumping between tools.</span
+              ><span lang="es"
+                >Del resumen de una suscripción al detalle de un recurso. Todo conectado, sin saltar
+                de una herramienta a otra.</span
+              >
+            </p>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-copy">
+                <div class="feature-icon">
+                  <svg class="icon" aria-hidden="true"><use href="#i-box" /></svg>
+                </div>
+                <h3>
+                  <span lang="en">An inventory you can explore</span
+                  ><span lang="es">Un inventario que puedes explorar</span>
+                </h3>
+                <p>
+                  <span lang="en"
+                    >Filter by subscription, discover your services and follow your tags. Search,
+                    sort, group and export without losing context.</span
+                  ><span lang="es"
+                    >Filtra por suscripción, descubre tus servicios y sigue tus etiquetas. Busca,
+                    ordena, agrupa y exporta sin perder el contexto.</span
+                  >
+                </p>
+              </div>
+              <div class="feature-visual">
+                <div class="visual-label">
+                  <span lang="en">Your services, organised</span
+                  ><span lang="es">Tus servicios, organizados</span><span class="tag">Azure</span>
+                </div>
+                <div class="service-grid">
+                  <div>
+                    <svg class="icon" aria-hidden="true"><use href="#i-server" /></svg>Compute
+                  </div>
+                  <div>
+                    <svg class="icon" aria-hidden="true"><use href="#i-box" /></svg>Containers
+                  </div>
+                  <div>
+                    <svg class="icon" aria-hidden="true"><use href="#i-code" /></svg>Web &amp; APIs
+                  </div>
+                  <div>
+                    <svg class="icon" aria-hidden="true"><use href="#i-network" /></svg>Network
+                  </div>
+                  <div>
+                    <svg class="icon" aria-hidden="true"><use href="#i-database" /></svg>Databases
+                  </div>
+                  <div>
+                    <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg>Security
+                  </div>
+                </div>
+              </div>
+            </article>
+            <article class="feature-card">
+              <div class="feature-copy">
+                <div class="feature-icon">
+                  <svg class="icon" aria-hidden="true"><use href="#i-chart" /></svg>
+                </div>
+                <h3>
+                  <span lang="en">Know where your cloud spend goes</span
+                  ><span lang="es">Entiende a dónde va tu gasto cloud</span>
+                </h3>
+                <p>
+                  <span lang="en"
+                    >Actual or amortized costs, by service and resource. Separate currencies and
+                    explicit partial results. Missing data is never zero spend.</span
+                  ><span lang="es"
+                    >Costes reales o amortizados, por servicio y recurso. Monedas separadas y
+                    resultados parciales visibles. Un dato ausente nunca es gasto cero.</span
+                  >
+                </p>
+              </div>
+              <div class="feature-visual">
+                <div class="visual-label">
+                  <span lang="en">Service distribution</span
+                  ><span lang="es">Distribución por servicio</span
+                  ><span class="tag"
+                    ><span lang="en">Example</span><span lang="es">Ejemplo</span></span
+                  >
+                </div>
+                <div class="cost-mini">
+                  <div class="bar-row">
+                    <span>Compute</span>
+                    <div class="bar-track"><i style="--value: 90%"></i></div>
+                    <b>42%</b>
+                  </div>
+                  <div class="bar-row">
+                    <span>SQL</span>
+                    <div class="bar-track"><i style="--value: 60%"></i></div>
+                    <b>28%</b>
+                  </div>
+                  <div class="bar-row">
+                    <span>Storage</span>
+                    <div class="bar-track"><i style="--value: 38.6%"></i></div>
+                    <b>18%</b>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="small-features">
+            <article class="small-feature">
+              <svg class="icon" aria-hidden="true"><use href="#i-search" /></svg>
+              <h3>
+                <span lang="en">One search. Your whole inventory.</span
+                ><span lang="es">Una búsqueda. Todo tu inventario.</span>
+              </h3>
+              <p>
+                <span lang="en"
+                  >Find a resource, tag or subscription with Ctrl+K. No extra calls to Azure.</span
+                ><span lang="es"
+                  >Encuentra un recurso, una etiqueta o una suscripción con Ctrl+K. Sin llamadas
+                  adicionales a Azure.</span
+                >
+              </p>
+            </article>
+            <article class="small-feature">
+              <svg class="icon" aria-hidden="true"><use href="#i-sliders" /></svg>
+              <h3>
+                <span lang="en">Your collector, under control</span
+                ><span lang="es">Tu colector, bajo control</span>
+              </h3>
+              <p>
+                <span lang="en"
+                  >Check metrics, schedule collections and choose your tag columns from
+                  Administration.</span
+                ><span lang="es"
+                  >Consulta métricas, programa recogidas y elige las columnas de etiquetas desde
+                  Administración.</span
+                >
+              </p>
+            </article>
+            <article class="small-feature">
+              <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg>
+              <h3>
+                <span lang="en">Access stays on your terms</span
+                ><span lang="es">El acceso, en tus manos</span>
+              </h3>
+              <p>
+                <span lang="en"
+                  >Microsoft Entra ID or demo login. Cloud credentials stay on the server, not in
+                  the browser.</span
+                ><span lang="es"
+                  >Microsoft Entra ID o acceso demo. Las credenciales cloud se quedan en el
+                  servidor, no en el navegador.</span
+                >
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section architecture-section" id="how">
+        <div class="container">
+          <div class="architecture-heading">
+            <div>
+              <span class="eyebrow"
+                ><span lang="en">YOUR INFRASTRUCTURE. YOUR DATA.</span
+                ><span lang="es">TU INFRAESTRUCTURA. TUS DATOS.</span></span
+              >
+              <h2 class="section-title">
+                <span lang="en">A clear path from cloud to insight.</span
+                ><span lang="es">De la nube al detalle.<br />Sin cajas negras.</span>
+              </h2>
+              <p class="section-lead">
+                <span lang="en"
+                  >A collector, a snapshot and a dashboard. Deploy it in your environment and see
+                  exactly how it works.</span
+                ><span lang="es"
+                  >Un colector, un snapshot y un dashboard. Despliégalo en tu entorno y conoce
+                  exactamente cómo funciona.</span
+                >
+              </p>
+            </div>
+            <a
+              class="text-link"
+              data-full-diagram
+              href="assets/architecture.html?theme=light"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><span lang="en">Open full diagram</span><span lang="es">Abrir diagrama completo</span
+              ><svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+            ></a>
+          </div>
+          <figure class="architecture-diagram">
+            <figcaption>
+              <span
+                ><strong>Archify</strong> ·
+                <span data-diagram-title>Application architecture</span></span
+              >
+              <label class="diagram-select" hidden>
+                <span lang="en">Diagram</span><span lang="es">Diagrama</span>
+                <select id="diagram-select" aria-controls="architecture-document">
+                  <option value="application">Application</option>
+                  <option value="azure">Azure deployment</option>
+                </select>
+              </label>
+              <noscript>
+                <a
+                  href="assets/azure-deployment.html?theme=light"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Azure deployment ↗</a
+                >
+              </noscript>
+            </figcaption>
+            <iframe
+              id="architecture-document"
+              src="assets/architecture.html?theme=light&amp;present=1"
+              title="Archify — Application architecture / Arquitectura de la aplicación"
+              loading="lazy"
+              sandbox="allow-scripts allow-downloads"
+              referrerpolicy="no-referrer"
+            ></iframe>
+          </figure>
+          <p class="diagram-help" data-diagram-help="application">
+            <span lang="en"
+              >Zoom or select a component to explore. Diagram labels are in Spanish. This is a
+              logical architecture, not live monitoring.</span
+            ><span lang="es"
+              >Amplía o selecciona un componente para explorar. Es un diagrama de la arquitectura
+              lógica, no una monitorización en tiempo real.</span
+            >
+          </p>
+          <p class="diagram-help" data-diagram-help="azure" hidden>
+            <span lang="en"
+              >Reference Azure deployment. Names and regions are examples, not live resources.
+              Diagram labels are in Spanish.</span
+            >
+            <span lang="es"
+              >Despliegue Azure de referencia. Los nombres y las regiones son ejemplos, no recursos
+              en vivo.</span
+            >
+          </p>
+          <p class="architecture-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg
+            ><span lang="en">If an import fails, your previous snapshot stays available.</span
+            ><span lang="es">Si una importación falla, el snapshot anterior sigue disponible.</span>
+          </p>
+        </div>
+      </section>
+      <section class="section" id="start">
+        <div class="container start-layout">
+          <div>
+            <span class="eyebrow"
+              ><span lang="en">START SMALL. EXPLORE EVERYTHING.</span
+              ><span lang="es">EMPIEZA EN LOCAL. EXPLÓRALO TODO.</span></span
+            >
+            <h2 class="section-title">
+              <span lang="en">Your first look,<br />without an Azure account.</span
+              ><span lang="es">Tu primera prueba,<br />sin una cuenta de Azure.</span>
+            </h2>
+            <p class="section-lead">
+              <span lang="en"
+                >Load the demo inventory and explore 214 fictional resources. Connect your Azure
+                subscriptions when you're ready.</span
+              ><span lang="es"
+                >Carga el inventario de demostración y explora 214 recursos ficticios. Conecta tus
+                suscripciones Azure cuando estés preparado.</span
+              >
+            </p>
+            <ul class="requirements">
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg
+                ><span lang="en">Node.js 24 and an empty PostgreSQL database</span
+                ><span lang="es">Node.js 24 y una base PostgreSQL vacía</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg
+                ><span lang="en">Docker and Azure deployment guides included</span
+                ><span lang="es">Guías de despliegue con Docker y Azure incluidas</span>
+              </li>
+              <li>
+                <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg
+                ><span lang="en">No cloud credentials needed for the demo</span
+                ><span lang="es">Sin credenciales cloud para probar la demo</span>
+              </li>
+            </ul>
+            <a
+              class="text-link"
+              data-doc-link
+              href="https://github.com/danieljsaldana/goliat-cloud-inventory#quick-start"
+              ><span lang="en">Read the setup guide</span
+              ><span lang="es">Leer la guía de instalación</span
+              ><svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+            ></a>
+          </div>
+          <div class="terminal">
+            <div class="terminal-header" aria-hidden="true">
+              <i></i><i></i><i></i><span>goliat-cloud-inventory / bash</span>
+            </div>
+            <pre><code><span class="comment" lang="en"># Clone and install</span><span class="comment" lang="es"># Clona e instala</span>
+<span class="prompt">$ </span>git clone https://github.com/danieljsaldana/goliat-cloud-inventory.git
+<span class="prompt">$ </span>cd goliat-cloud-inventory
+<span class="prompt">$ </span>npm ci
+<span class="prompt">$ </span>cp .env.example .env
+
+<span class="comment" lang="en"># Configure DB_*, demo username/password and AUTH_SECRET</span><span class="comment" lang="es"># Configura DB_*, usuario/contraseña demo y AUTH_SECRET</span>
+<span class="comment" lang="en"># Then load the demo and start</span><span class="comment" lang="es"># Después, carga la demo y arranca</span>
+<span class="prompt">$ </span>npm run db:init
+<span class="prompt">$ </span>npm run db:seed
+<span class="prompt">$ </span>npm run dev</code></pre>
+            <div class="terminal-note">
+              <span lang="en">Your dashboard → </span><span lang="es">Tu dashboard → </span
+              ><strong>http://127.0.0.1:4000</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="container closing">
+        <div>
+          <h2>
+            <span lang="en">Built to be yours.</span
+            ><span lang="es">Hecho para que lo hagas tuyo.</span>
+          </h2>
+          <p>
+            <span lang="en"
+              >Read it, deploy it, improve it. Goliat is open source, under the MIT license.</span
+            ><span lang="es"
+              >Léelo, despliégalo, mejóralo. Goliat es código abierto, con licencia MIT.</span
+            >
+          </p>
+        </div>
+        <a class="button primary" href="https://github.com/danieljsaldana/goliat-cloud-inventory"
+          ><svg class="icon" aria-hidden="true"><use href="#i-github" /></svg
+          ><span lang="en">Discover Goliat on GitHub</span
+          ><span lang="es">Descubre Goliat en GitHub</span
+          ><svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+        ></a>
+      </div>
+    </main>
+    <footer>
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <img src="assets/favicon.svg" alt="" width="25" height="25" /><span
+            >© 2026 <a href="https://danieljsaldana.dev" rel="author">Daniel J. Saldaña</a> ·
+            Goliat</span
+          >
+        </div>
+        <nav aria-label="Links">
+          <a href="https://github.com/danieljsaldana/goliat-cloud-inventory">GitHub</a
+          ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/tree/main/docs"
+            ><span lang="en">Documentation</span><span lang="es">Documentación</span></a
+          ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/blob/main/LICENSE"
+            >MIT</a
+          >
+        </nav>
+      </div>
+      <p class="container independent">
+        <span lang="en">An independent community project. Not an official Microsoft product.</span
+        ><span lang="es"
+          >Un proyecto independiente de la comunidad. No es un producto oficial de Microsoft.</span
+        >
+      </p>
+    </footer>
+    <script type="module">
+      import { createDemo } from './demo.js';
+      const demo = createDemo(document.querySelector('.dashboard'));
+      const root = document.documentElement;
+      const languageButtons = [...document.querySelectorAll('[data-set-lang]')];
+      const storageKey = 'goliat-site-lang';
+      const repository = 'https://github.com/danieljsaldana/goliat-cloud-inventory';
+      const diagramSelect = document.getElementById('diagram-select');
+      const diagramFrame = document.getElementById('architecture-document');
+      const diagrams = {
+        application: {
+          source: 'assets/architecture.html',
+          option: { en: 'Application', es: 'Aplicación' },
+          title: { en: 'Application architecture', es: 'Arquitectura de la aplicación' },
+        },
+        azure: {
+          source: 'assets/azure-deployment.html',
+          option: { en: 'Azure deployment', es: 'Despliegue Azure' },
+          title: { en: 'Azure deployment', es: 'Despliegue en Azure' },
+        },
+      };
+
+      function updateDiagram(language) {
+        if (!Object.hasOwn(diagrams, diagramSelect.value)) {
+          throw new RangeError('Unsupported architecture diagram');
+        }
+        const diagram = diagrams[diagramSelect.value];
+        for (const option of diagramSelect.options) {
+          const label = diagrams[option.value].option[language];
+          if (option.textContent !== label) option.textContent = label;
+        }
+        document.querySelector('.diagram-select').hidden = false;
+        document.querySelector('[data-diagram-title]').textContent = diagram.title[language];
+        document
+          .querySelector('[data-full-diagram]')
+          .setAttribute('href', `${diagram.source}?theme=light`);
+        diagramFrame.title = `Archify — ${diagram.title[language]}`;
+        const source = `${diagram.source}?theme=light&present=1`;
+        if (diagramFrame.getAttribute('src') !== source) diagramFrame.setAttribute('src', source);
+        for (const help of document.querySelectorAll('[data-diagram-help]')) {
+          help.hidden = help.dataset.diagramHelp !== diagramSelect.value;
+        }
+      }
+      diagramSelect.addEventListener('change', () => updateDiagram(root.lang));
+
+      function applyLanguage(language) {
+        root.lang = language;
+        root.dataset.lang = language;
+        updateDiagram(language);
+        demo.setLanguage(language);
+        document.title =
+          language === 'es'
+            ? 'Goliat — Tu Azure, en perspectiva'
+            : 'Goliat — Your Azure, in perspective';
+        languageButtons.forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.setLang === language));
+        });
+        document.querySelector('[data-doc-link]').href =
+          language === 'es'
+            ? `${repository}/blob/main/README.es.md#inicio-rápido`
+            : `${repository}#quick-start`;
+      }
+
+      function storedLanguage() {
+        try {
+          return localStorage.getItem(storageKey);
+        } catch (error) {
+          console.warn('Goliat: language preference storage is unavailable.', error.name);
+          return null;
+        }
+      }
+
+      const savedLanguage = storedLanguage();
+      const browserLanguage = navigator.language.toLowerCase().startsWith('es') ? 'es' : 'en';
+      applyLanguage(['en', 'es'].includes(savedLanguage) ? savedLanguage : browserLanguage);
+      languageButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const language = button.dataset.setLang;
+          applyLanguage(language);
+          try {
+            localStorage.setItem(storageKey, language);
+          } catch (error) {
+            console.warn('Goliat: language preference could not be saved.', error.name);
+          }
+        });
+      });
+
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+      function selectTab(selected) {
+        tabs.forEach((tab) => {
+          const active = tab === selected;
+          tab.setAttribute('aria-selected', String(active));
+          tab.tabIndex = active ? 0 : -1;
+          document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
+        });
+        demo.setTab(selected.id.replace(/-tab$/, ''));
+      }
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectTab(tab));
+        tab.addEventListener('keydown', (event) => {
+          const targets = {
+            ArrowRight: tabs[(index + 1) % tabs.length],
+            ArrowLeft: tabs[(index + tabs.length - 1) % tabs.length],
+            Home: tabs[0],
+            End: tabs[tabs.length - 1],
+          };
+          const target = targets[event.key];
+          if (!target) return;
+          event.preventDefault();
+          selectTab(target);
+          target.focus();
+        });
+      });
+    </script>
+  </body>
+</html>

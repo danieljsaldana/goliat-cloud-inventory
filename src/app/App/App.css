@@ -1,0 +1,12 @@
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.app-shell > .site-header,
+.app-shell > .site-footer {
+  flex-shrink: 0;
+}
+.app-shell > .site-footer {
+  margin-top: auto;
+}

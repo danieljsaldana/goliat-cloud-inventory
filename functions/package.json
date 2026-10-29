@@ -1,0 +1,25 @@
+{
+  "name": "goliat-inventory-functions",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.mjs",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "start": "func start",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check.mjs",
+    "collect": "node scripts/collect.mjs",
+    "validate": "node scripts/validate.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "dependencies": {
+    "@azure/functions": "4.16.5",
+    "@azure/identity": "4.14.0",
+    "@azure/storage-blob": "12.34.0",
+    "@azure/storage-queue": "12.32.0",
+    "jose": "6.2.12"
+  }
+}

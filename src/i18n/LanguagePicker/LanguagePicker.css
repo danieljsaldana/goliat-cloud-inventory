@@ -1,0 +1,19 @@
+.language-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+}
+.language-picker .select-control {
+  width: 8.5rem;
+}
+@media (max-width: 720px) {
+  .language-picker {
+    gap: 6px;
+    font-size: var(--text-sm);
+  }
+  .language-picker .select-control {
+    width: 8.5rem;
+  }
+}

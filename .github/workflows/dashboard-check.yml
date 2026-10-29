@@ -1,0 +1,84 @@
+name: Goliat - Pruebas
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  functions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v6
+      - name: Preparar Node.js para Functions
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+      - name: Instalar el productor
+        run: npm --prefix functions ci
+      - name: Comprobar sintaxis
+        run: npm --prefix functions run check
+      - name: Probar la Function sin recursos Azure
+        run: npm --prefix functions test
+      - name: Crear el paquete de despliegue
+        run: npm --prefix functions run package
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: inventory_test
+          POSTGRES_USER: inventory
+          POSTGRES_PASSWORD: test-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -h 127.0.0.1 -U inventory -d inventory_test"
+          --health-interval=10s --health-timeout=5s --health-retries=5
+    env:
+      DB_HOST: localhost
+      DB_PORT: '5432'
+      DB_NAME: inventory_test
+      DB_USER: inventory
+      DB_PASSWORD: test-only
+      DB_SSL: 'false'
+      RUN_DB_TESTS: '1'
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Obtener el código
+        uses: actions/checkout@v6
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Ejecutar pruebas unitarias y de PostgreSQL
+        run: npm test
+      - name: Instalar Chromium para las pruebas del panel
+        run: npx playwright install --with-deps chromium
+      - name: Probar el panel en navegador
+        run: npm run test:e2e
+      - name: Guardar diagnóstico de las pruebas de navegador
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: pruebas-dashboard
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7

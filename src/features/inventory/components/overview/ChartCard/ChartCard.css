@@ -1,0 +1,28 @@
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 24px;
+  container-type: inline-size;
+  container-name: chart;
+}
+.chart-card > .panel-heading {
+  margin-bottom: 0;
+}
+.chart-card > .panel-heading > div {
+  flex: 1;
+  min-width: 0;
+}
+.chart-card > .chart-empty-state {
+  flex: 1;
+  align-content: center;
+}
+.chart-card > .pagination-footer {
+  margin-top: auto;
+}
+@media (max-width: 720px) {
+  .chart-card {
+    padding: 20px;
+  }
+}

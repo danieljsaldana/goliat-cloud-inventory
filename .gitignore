@@ -1,0 +1,55 @@
+# Dependencias y archivos generados: nunca se versionan
+node_modules/
+.next/
+.archify/
+certs/*.pem
+dist/
+_site/
+disk/
+*site_disk*/
+/cloud-inventory/
+.local-validation-tools/
+.cloud-site-*/
+/site/assets/architecture.html
+/site/assets/azure-deployment.html
+/site/assets/cloud-inventory.png
+/site/assets/demo-data.json
+/site/assets/pageWindow.js
+/site/assets/pagination/
+/site/assets/admin/
+/site/assets/sumBy.js
+/site/assets/number.js
+
+# Cachés, entornos y resultados de pruebas
+coverage/
+playwright-report/
+test-results/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.coverage
+.coverage.*
+htmlcov/
+
+# Configuración local; conservar las plantillas de ejemplo
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+.azure/
+*.local.json
+/functions/local.settings.json
+/functions/azure-inventory.local.json
+
+# Se usa package-lock.json para las instalaciones de CI
+bun.lock
+
+# Archivos del sistema y del editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+*.swp
+*.swo

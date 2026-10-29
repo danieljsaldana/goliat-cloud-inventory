@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Goliat · Arquitectura de la aplicación",
+    "output": "architecture.html",
+    "locale": "es",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "azure",
+      "type": "cloud",
+      "brand": "microsoft-azure",
+      "icon": "none",
+      "label": "Microsoft Azure",
+      "sublabel": "Resource Graph y ARM",
+      "tag": "Recursos de las suscripciones",
+      "pos": [50, 40],
+      "size": [240, 90]
+    },
+    {
+      "id": "azure-job",
+      "type": "backend",
+      "label": "Azure Function",
+      "sublabel": "Timer, cola y API Entra",
+      "tag": "Recogida del inventario",
+      "pos": [430, 40],
+      "size": [240, 90]
+    },
+    {
+      "id": "azure-storage",
+      "type": "cloud",
+      "label": "Azure Blob Storage",
+      "sublabel": "JSON versionado con ETag",
+      "tag": "Publicación completa",
+      "pos": [810, 40],
+      "size": [240, 90]
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "Auth.js",
+      "sublabel": "Entra ID o usuario demo",
+      "tag": "Sesión y autorización",
+      "pos": [50, 270],
+      "size": [240, 90]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Backend Next.js",
+      "sublabel": "Inventario, FinOps y administración",
+      "tag": "Credenciales en el servidor",
+      "pos": [430, 270],
+      "size": [240, 90]
+    },
+    {
+      "id": "azure-normalizer",
+      "type": "backend",
+      "label": "Módulo de inventario",
+      "sublabel": "Lectura, validación y normalización",
+      "tag": "JSON Storage → 73 vistas",
+      "pos": [810, 270],
+      "size": [240, 90]
+    },
+    {
+      "id": "dashboard",
+      "type": "frontend",
+      "label": "Dashboard React",
+      "sublabel": "Inventario, FinOps y administración",
+      "tag": "Interfaz ES / EN",
+      "pos": [50, 500],
+      "size": [240, 90]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Snapshots JSONB del inventario",
+      "tag": "Publicación atómica",
+      "pos": [430, 500],
+      "size": [240, 90]
+    },
+    {
+      "id": "cost",
+      "type": "cloud",
+      "label": "Azure Cost Management",
+      "sublabel": "Costes reales o amortizados",
+      "tag": "Cost Management Reader",
+      "pos": [810, 500],
+      "size": [240, 90]
+    }
+  ],
+  "connections": [
+    { "id": "azure-read", "from": "azure", "to": "azure-job", "label": "Recursos y catálogos" },
+    { "id": "azure-publish", "from": "azure-job", "to": "azure-storage", "label": "JSON completo" },
+    {
+      "id": "azure-download",
+      "from": "azure-storage",
+      "to": "azure-normalizer",
+      "label": "Lee JSON con ETag"
+    },
+    {
+      "id": "azure-write",
+      "from": "azure-normalizer",
+      "to": "postgres",
+      "label": "Snapshot atómico",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    { "id": "database-read", "from": "postgres", "to": "api", "label": "Consultas SQL" },
+    { "id": "session", "from": "auth", "to": "api", "label": "Sesión validada" },
+    {
+      "id": "display",
+      "from": "api",
+      "to": "dashboard",
+      "label": "HTTPS · JSON",
+      "fromSide": "bottom",
+      "toSide": "right"
+    },
+    {
+      "id": "cost-query",
+      "from": "cost",
+      "to": "api",
+      "label": "Consulta de costes",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    { "id": "manual-refresh", "from": "api", "to": "azure-job", "label": "Generación · Entra" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Inventario",
+      "items": [
+        "La Function consulta Azure y publica un JSON completo en Blob Storage, sin acceder a PostgreSQL.",
+        "El backend lee y valida el documento, normaliza 69 informes de origen en 73 vistas y publica un snapshot en una transacción.",
+        "Actualizar solicita una generación autenticada, espera la publicación, importa el documento y recarga la web.",
+        "Un fallo de importación conserva el snapshot anterior; el bloqueo compartido coordina las actualizaciones manuales."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "FinOps",
+      "items": [
+        "El backend consulta Azure Cost Management con su identidad y las suscripciones autorizadas.",
+        "Los gastos no se importan a las tablas de inventario: la caché de consulta reside temporalmente en el proceso web.",
+        "Las monedas se mantienen separadas. Los permisos insuficientes y los datos parciales se muestran explícitamente."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Acceso y operación",
+      "items": [
+        "Auth.js gestiona el acceso Entra ID o demo; páginas y API comprueban sesión y permisos en el servidor.",
+        "Administración requiere permisos de administrador de Goliat y consulta los servicios mediante las identidades del servidor.",
+        "DASHBOARD_AUTH_ENABLED=false desactiva explícitamente la protección del dashboard; no es un valor adecuado para inventarios privados publicados.",
+        "Las credenciales cloud y PostgreSQL permanecen en el servidor."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Despliegue y desarrollo",
+      "items": [
+        "iac/ despliega la Function, Storage, la web y PostgreSQL; el otro diagrama documenta esos recursos de referencia.",
+        "db:init prepara el esquema antes de activar la web. Readiness verifica el esquema y la web no ejecuta DDL al arrancar.",
+        "db:seed carga inventario ficticio para desarrollo sin credenciales cloud.",
+        "Este diagrama explica el flujo lógico; los módulos de normalización forman parte del backend, no son otro servicio desplegado."
+      ]
+    }
+  ]
+}

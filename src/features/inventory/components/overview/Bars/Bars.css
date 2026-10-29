@@ -1,0 +1,6 @@
+.resource-bar-chart {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: auto;
+  font-size: var(--text-sm);
+}

@@ -1,0 +1,1618 @@
+{
+  "schemaVersion": 2,
+  "reports": [
+    {
+      "id": "resource-types",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "resources"
+      ]
+    },
+    {
+      "id": "tag-coverage",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "resources",
+        "withTags",
+        "withoutTags"
+      ]
+    },
+    {
+      "id": "tag-keys",
+      "headers": ["subscriptionName", "subscriptionId", "tagKey", "resources", "distinctValues"]
+    },
+    {
+      "id": "resources-by-tag",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "tagKey",
+        "tagValue",
+        "resourceProvider",
+        "type",
+        "resources"
+      ]
+    },
+    {
+      "id": "resource-groups",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "location",
+        "resources",
+        "tags_json"
+      ]
+    },
+    {
+      "id": "resources",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "resourceProvider",
+        "type",
+        "name",
+        "location",
+        "kind",
+        "sku_name",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "virtual-machine-summary",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "location",
+        "osType",
+        "vmSize",
+        "powerState",
+        "vms"
+      ]
+    },
+    {
+      "id": "virtual-machines",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "vmSize",
+        "osType",
+        "powerState",
+        "provisioningState",
+        "image",
+        "zones",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "aks",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "kubernetesVersion",
+        "currentKubernetesVersion",
+        "provisioningState",
+        "powerState",
+        "skuTier",
+        "upgradeChannel",
+        "privateCluster",
+        "networkPlugin",
+        "nodePools",
+        "nodeResourceGroup",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "aks-node-pools",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "cluster",
+        "location",
+        "poolName",
+        "mode",
+        "osType",
+        "vmSize",
+        "nodeCount",
+        "orchestratorVersion",
+        "currentOrchestratorVersion",
+        "autoscaling",
+        "minCount",
+        "maxCount"
+      ]
+    },
+    {
+      "id": "web-apps",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "appType",
+        "kind",
+        "state",
+        "defaultHostName",
+        "httpsOnly",
+        "appServicePlan",
+        "linuxFxVersion",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "app-service-plans",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "kind",
+        "skuName",
+        "skuTier",
+        "capacity",
+        "numberOfSites",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "databases",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "version",
+        "state",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "ai-services",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "endpoint",
+        "publicNetworkAccess",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "api-management",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "skuName",
+        "capacity",
+        "gatewayUrl",
+        "virtualNetworkType",
+        "publicNetworkAccess",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "virtual-networks",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "addressPrefixes",
+        "dnsServers",
+        "subnetCount",
+        "peeringCount",
+        "enableDdosProtection",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "subnets",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "virtualNetwork",
+        "name",
+        "location",
+        "addressPrefixes",
+        "networkSecurityGroupId",
+        "routeTableId",
+        "natGatewayId",
+        "privateEndpointNetworkPolicies",
+        "serviceEndpoints",
+        "delegations",
+        "id"
+      ]
+    },
+    {
+      "id": "private-endpoints",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "subnetId",
+        "connectionStates",
+        "privateLinkServiceIds",
+        "groupIds",
+        "networkInterfaces",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "network-security-groups",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "customRuleCount",
+        "defaultRuleCount",
+        "subnetCount",
+        "networkInterfaceCount",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "network-security-rules",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "networkSecurityGroup",
+        "name",
+        "location",
+        "ruleType",
+        "priority",
+        "direction",
+        "access",
+        "protocol",
+        "sourceAddressPrefixes",
+        "sourcePortRanges",
+        "destinationAddressPrefixes",
+        "destinationPortRanges",
+        "description",
+        "id"
+      ]
+    },
+    {
+      "id": "network-services",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "location",
+        "skuName",
+        "ipAddress",
+        "ipVersion",
+        "allocationMethod",
+        "dnsName",
+        "gatewayType",
+        "virtualNetworkId",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "storage-accounts",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "location",
+        "kind",
+        "skuName",
+        "accessTier",
+        "minimumTlsVersion",
+        "httpsOnly",
+        "allowBlobPublicAccess",
+        "allowSharedKeyAccess",
+        "publicNetworkAccess",
+        "networkDefaultAction",
+        "encryptionKeySource",
+        "isHnsEnabled",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "key-vaults",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "location",
+        "skuName",
+        "vaultUri",
+        "enableRbacAuthorization",
+        "enableSoftDelete",
+        "enablePurgeProtection",
+        "softDeleteRetentionInDays",
+        "publicNetworkAccess",
+        "networkDefaultAction",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "monitoring-resources",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "location",
+        "retentionInDays",
+        "workspaceResourceId",
+        "publicNetworkAccessForIngestion",
+        "publicNetworkAccessForQuery",
+        "enabled",
+        "severity",
+        "scopes",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "backup-vaults",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "location",
+        "skuName",
+        "publicNetworkAccess",
+        "softDeleteState",
+        "immutabilityState",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "external-tenants",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "tenantId",
+        "domainName",
+        "skuName",
+        "skuTier",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "redis",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "publicNetworkAccess",
+        "minimumTlsVersion",
+        "redisVersion",
+        "hostName",
+        "enableNonSslPort",
+        "port",
+        "sslPort",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "managed-redis",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "publicNetworkAccess",
+        "minimumTlsVersion",
+        "redisVersion",
+        "hostName",
+        "highAvailability",
+        "serviceType",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "sql-servers",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "publicNetworkAccess",
+        "minimumTlsVersion",
+        "fullyQualifiedDomainName",
+        "version",
+        "state",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "sql-databases",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "serverId",
+        "skuName",
+        "skuTier",
+        "status",
+        "collation",
+        "elasticPoolId",
+        "maxSizeBytes",
+        "zoneRedundant",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "cosmos-db",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "documentEndpoint",
+        "serverVersion",
+        "publicNetworkAccess",
+        "enableAutomaticFailover",
+        "enableMultipleWriteLocations",
+        "locations",
+        "capabilities",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "container-registries",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "loginServer",
+        "adminUserEnabled",
+        "publicNetworkAccess",
+        "zoneRedundancy",
+        "networkDefaultAction",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "service-bus",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "publicNetworkAccess",
+        "minimumTlsVersion",
+        "status",
+        "serviceBusEndpoint",
+        "zoneRedundant",
+        "disableLocalAuth",
+        "capacity",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "dns-zones",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "zoneType",
+        "numberOfRecordSets",
+        "numberOfVirtualNetworkLinks",
+        "nameServers",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "managed-disks",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "diskState",
+        "osType",
+        "publicNetworkAccess",
+        "networkAccessPolicy",
+        "diskSizeGB",
+        "managedBy",
+        "encryptionType",
+        "sourceResourceId",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "webhooks",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "parentId",
+        "status",
+        "isEnabled",
+        "actions",
+        "scope",
+        "runbook",
+        "expiryTime",
+        "lastInvokedTime",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "shared-dashboards",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "displayName",
+        "lensCount",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "route-tables",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "disableBgpRoutePropagation",
+        "routes",
+        "subnetIds",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "vm-scale-sets",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "vmSize",
+        "capacity",
+        "orchestrationMode",
+        "overprovision",
+        "upgradeMode",
+        "osType",
+        "zones",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "logic-apps",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "appType",
+        "state",
+        "httpsOnly",
+        "appServicePlanId",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "api-connections",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "displayName",
+        "apiId",
+        "statuses",
+        "connectionState",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "log-analytics",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "retentionInDays",
+        "publicNetworkAccessForIngestion",
+        "publicNetworkAccessForQuery",
+        "dailyQuotaGb",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "automation-accounts",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "state",
+        "publicNetworkAccess",
+        "disableLocalAuth",
+        "identityType",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "functions",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "state",
+        "defaultHostName",
+        "httpsOnly",
+        "appServicePlanId",
+        "runtime",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "container-apps",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "environmentId",
+        "fqdn",
+        "externalIngress",
+        "minReplicas",
+        "maxReplicas",
+        "workloadProfileName",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "event-hubs",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "publicNetworkAccess",
+        "minimumTlsVersion",
+        "status",
+        "zoneRedundant",
+        "isAutoInflateEnabled",
+        "disableLocalAuth",
+        "capacity",
+        "maximumThroughputUnits",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "event-grid",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "skuName",
+        "skuTier",
+        "endpoint",
+        "publicNetworkAccess",
+        "inputSchema",
+        "source",
+        "topicType",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "runbooks",
+      "headers": [
+        "subscriptionName",
+        "subscriptionId",
+        "resourceGroup",
+        "name",
+        "resourceProvider",
+        "type",
+        "kind",
+        "location",
+        "automationAccountId",
+        "runbookType",
+        "state",
+        "logVerbose",
+        "logProgress",
+        "provisioningState",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "postgresql",
+      "headers": [
+        "name",
+        "state",
+        "version",
+        "storageSizeGB",
+        "backupRetentionDays",
+        "storageAutoGrow",
+        "geoRedundantBackup",
+        "highAvailabilityMode",
+        "highAvailabilityState",
+        "publicNetworkAccess",
+        "fullyQualifiedDomainName",
+        "availabilityZone",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "mysql",
+      "headers": [
+        "name",
+        "state",
+        "version",
+        "storageSizeGB",
+        "backupRetentionDays",
+        "storageAutoGrow",
+        "geoRedundantBackup",
+        "highAvailabilityMode",
+        "highAvailabilityState",
+        "publicNetworkAccess",
+        "fullyQualifiedDomainName",
+        "availabilityZone",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "data-factory",
+      "headers": [
+        "name",
+        "publicNetworkAccess",
+        "identityType",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "synapse",
+      "headers": [
+        "name",
+        "publicNetworkAccess",
+        "managedResourceGroupName",
+        "managedVirtualNetwork",
+        "sqlEndpoint",
+        "developmentEndpoint",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "databricks",
+      "headers": [
+        "name",
+        "workspaceUrl",
+        "workspaceId",
+        "publicNetworkAccess",
+        "managedResourceGroupId",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "ai-search",
+      "headers": [
+        "name",
+        "replicaCount",
+        "partitionCount",
+        "publicNetworkAccess",
+        "disableLocalAuth",
+        "status",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "managed-identities",
+      "headers": [
+        "name",
+        "clientId",
+        "principalId",
+        "tenantId",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "azure-arc",
+      "headers": [
+        "name",
+        "status",
+        "osName",
+        "osVersion",
+        "agentVersion",
+        "machineFqdn",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "openai",
+      "headers": [
+        "name",
+        "endpoint",
+        "publicNetworkAccess",
+        "disableLocalAuth",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "machine-learning",
+      "headers": [
+        "name",
+        "publicNetworkAccess",
+        "workspaceId",
+        "identityType",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "public-ips",
+      "headers": [
+        "name",
+        "ipAddress",
+        "ipVersion",
+        "allocationMethod",
+        "prefixLength",
+        "dnsName",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "load-balancers",
+      "headers": [
+        "name",
+        "frontendCount",
+        "backendPoolCount",
+        "loadBalancingRuleCount",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "application-gateways",
+      "headers": [
+        "name",
+        "capacity",
+        "operationalState",
+        "frontendCount",
+        "backendPoolCount",
+        "firewallPolicyId",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "firewalls",
+      "headers": [
+        "name",
+        "threatIntelMode",
+        "firewallPolicyId",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "firewall-policies",
+      "headers": [
+        "name",
+        "threatIntelMode",
+        "basePolicyId",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "front-door",
+      "headers": [
+        "name",
+        "frontDoorId",
+        "resourceState",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "virtual-network-gateways",
+      "headers": [
+        "name",
+        "gatewayType",
+        "vpnType",
+        "enableBgp",
+        "activeActive",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "nat-gateways",
+      "headers": [
+        "name",
+        "idleTimeoutInMinutes",
+        "subnetCount",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "bastion",
+      "headers": [
+        "name",
+        "dnsName",
+        "enableTunneling",
+        "enableIpConnect",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "network-interfaces",
+      "headers": [
+        "name",
+        "virtualMachineId",
+        "acceleratedNetworking",
+        "ipConfigurationCount",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    },
+    {
+      "id": "application-insights",
+      "headers": [
+        "name",
+        "applicationType",
+        "workspaceResourceId",
+        "publicNetworkAccessForIngestion",
+        "publicNetworkAccessForQuery",
+        "provisioningState",
+        "resourceGroup",
+        "location",
+        "subscriptionName",
+        "subscriptionId",
+        "resourceProvider",
+        "type",
+        "kind",
+        "skuName",
+        "skuTier",
+        "tags_json",
+        "id"
+      ]
+    }
+  ],
+  "services": [
+    {
+      "id": "external-tenants",
+      "types": [
+        "microsoft.azureactivedirectory/b2cdirectories",
+        "microsoft.azureactivedirectory/ciamdirectories"
+      ]
+    },
+    {
+      "id": "redis",
+      "types": ["microsoft.cache/redis"]
+    },
+    {
+      "id": "managed-redis",
+      "types": ["microsoft.cache/redisenterprise"]
+    },
+    {
+      "id": "sql-servers",
+      "types": ["microsoft.sql/servers", "microsoft.sql/managedinstances"]
+    },
+    {
+      "id": "sql-databases",
+      "types": ["microsoft.sql/servers/databases", "microsoft.sql/managedinstances/databases"]
+    },
+    {
+      "id": "cosmos-db",
+      "types": ["microsoft.documentdb/databaseaccounts", "microsoft.documentdb/mongoclusters"]
+    },
+    {
+      "id": "container-registries",
+      "types": ["microsoft.containerregistry/registries"]
+    },
+    {
+      "id": "service-bus",
+      "types": ["microsoft.servicebus/namespaces"]
+    },
+    {
+      "id": "dns-zones",
+      "types": ["microsoft.network/dnszones", "microsoft.network/privatednszones"]
+    },
+    {
+      "id": "managed-disks",
+      "types": [
+        "microsoft.compute/disks",
+        "microsoft.compute/snapshots",
+        "microsoft.compute/diskencryptionsets",
+        "microsoft.compute/diskaccesses"
+      ]
+    },
+    {
+      "id": "webhooks",
+      "types": [
+        "microsoft.containerregistry/registries/webhooks",
+        "microsoft.automation/automationaccounts/webhooks"
+      ]
+    },
+    {
+      "id": "shared-dashboards",
+      "types": ["microsoft.portal/dashboards", "microsoft.dashboard/dashboards"]
+    },
+    {
+      "id": "route-tables",
+      "types": ["microsoft.network/routetables"]
+    },
+    {
+      "id": "vm-scale-sets",
+      "types": ["microsoft.compute/virtualmachinescalesets"]
+    },
+    {
+      "id": "logic-apps",
+      "types": ["microsoft.logic/workflows", "microsoft.web/sites"]
+    },
+    {
+      "id": "api-connections",
+      "types": ["microsoft.web/connections", "microsoft.web/customapis"]
+    },
+    {
+      "id": "log-analytics",
+      "types": ["microsoft.operationalinsights/workspaces"]
+    },
+    {
+      "id": "automation-accounts",
+      "types": ["microsoft.automation/automationaccounts"]
+    },
+    {
+      "id": "functions",
+      "types": ["microsoft.web/sites"]
+    },
+    {
+      "id": "container-apps",
+      "types": [
+        "microsoft.app/containerapps",
+        "microsoft.app/managedenvironments",
+        "microsoft.app/jobs"
+      ]
+    },
+    {
+      "id": "event-hubs",
+      "types": ["microsoft.eventhub/namespaces", "microsoft.eventhub/clusters"]
+    },
+    {
+      "id": "event-grid",
+      "types": [
+        "microsoft.eventgrid/topics",
+        "microsoft.eventgrid/systemtopics",
+        "microsoft.eventgrid/domains",
+        "microsoft.eventgrid/namespaces"
+      ]
+    },
+    {
+      "id": "runbooks",
+      "types": ["microsoft.automation/automationaccounts/runbooks"]
+    },
+    {
+      "id": "postgresql",
+      "types": [
+        "microsoft.dbforpostgresql/flexibleservers",
+        "microsoft.dbforpostgresql/servers",
+        "microsoft.dbforpostgresql/servergroupsv2"
+      ]
+    },
+    {
+      "id": "mysql",
+      "types": ["microsoft.dbformysql/flexibleservers", "microsoft.dbformysql/servers"]
+    },
+    {
+      "id": "data-factory",
+      "types": ["microsoft.datafactory/factories"]
+    },
+    {
+      "id": "synapse",
+      "types": ["microsoft.synapse/workspaces"]
+    },
+    {
+      "id": "databricks",
+      "types": ["microsoft.databricks/workspaces"]
+    },
+    {
+      "id": "ai-search",
+      "types": ["microsoft.search/searchservices"]
+    },
+    {
+      "id": "managed-identities",
+      "types": ["microsoft.managedidentity/userassignedidentities"]
+    },
+    {
+      "id": "azure-arc",
+      "types": ["microsoft.hybridcompute/machines"]
+    },
+    {
+      "id": "openai",
+      "types": ["microsoft.cognitiveservices/accounts"],
+      "kindContains": "openai"
+    },
+    {
+      "id": "machine-learning",
+      "types": ["microsoft.machinelearningservices/workspaces"]
+    },
+    {
+      "id": "public-ips",
+      "types": ["microsoft.network/publicipaddresses", "microsoft.network/publicipprefixes"]
+    },
+    {
+      "id": "load-balancers",
+      "types": ["microsoft.network/loadbalancers"]
+    },
+    {
+      "id": "application-gateways",
+      "types": ["microsoft.network/applicationgateways"]
+    },
+    {
+      "id": "firewalls",
+      "types": ["microsoft.network/azurefirewalls"]
+    },
+    {
+      "id": "firewall-policies",
+      "types": ["microsoft.network/firewallpolicies"]
+    },
+    {
+      "id": "front-door",
+      "types": ["microsoft.network/frontdoors", "microsoft.cdn/profiles"]
+    },
+    {
+      "id": "virtual-network-gateways",
+      "types": [
+        "microsoft.network/virtualnetworkgateways",
+        "microsoft.network/vpngateways",
+        "microsoft.network/expressroutegateways"
+      ]
+    },
+    {
+      "id": "nat-gateways",
+      "types": ["microsoft.network/natgateways"]
+    },
+    {
+      "id": "bastion",
+      "types": ["microsoft.network/bastionhosts"]
+    },
+    {
+      "id": "network-interfaces",
+      "types": ["microsoft.network/networkinterfaces"]
+    },
+    {
+      "id": "application-insights",
+      "types": ["microsoft.insights/components"]
+    }
+  ]
+}

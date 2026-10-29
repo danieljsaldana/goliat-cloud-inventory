@@ -1,0 +1,1 @@
+export const NORMALIZATION_VERSION = 2;

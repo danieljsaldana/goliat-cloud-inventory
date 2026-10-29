@@ -1,0 +1,124 @@
+.architecture-page {
+  width: 100%;
+  max-width: var(--management-page-max-width);
+  margin: 0 auto;
+  padding: 2rem clamp(1rem, 3vw, 3rem) 2rem;
+}
+.architecture-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.architecture-heading > div {
+  min-width: 0;
+}
+.architecture-heading .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.architecture-heading h1 {
+  margin: 0.65rem 0 0.45rem;
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+.architecture-heading p,
+.architecture-help {
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+.architecture-heading [data-slot='button'] {
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.architecture-viewer {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 3px 14px #16324f04;
+}
+.architecture-tabs {
+  gap: 1rem;
+}
+.architecture-tabs [data-slot='tabs-list'] {
+  max-width: 100%;
+}
+.architecture-snapshot {
+  margin: 0 0 1rem;
+  color: var(--muted-foreground);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+.architecture-viewer iframe,
+.architecture-frame-placeholder {
+  display: block;
+  width: 100%;
+  height: clamp(620px, 78dvh, 1000px);
+  border: 0;
+}
+.architecture-viewer[data-loading='true'] iframe {
+  visibility: hidden;
+}
+.architecture-loading {
+  position: absolute;
+  inset: 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: var(--card);
+}
+.architecture-loading-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.architecture-loading-title {
+  width: min(45%, 240px);
+  height: 1.25rem;
+}
+.architecture-loading-controls {
+  width: min(30%, 160px);
+  height: 2rem;
+}
+.architecture-loading-diagram {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
+  gap: clamp(1rem, 4vw, 4rem);
+}
+.architecture-loading-node {
+  height: clamp(90px, 15dvh, 140px);
+  border-radius: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .architecture-loading [data-slot='skeleton'] {
+    animation: none;
+  }
+}
+.architecture-help {
+  margin-top: 0.75rem;
+  font-size: var(--text-sm);
+}
+@media (max-width: 720px) {
+  .architecture-loading-diagram {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .architecture-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .architecture-viewer iframe,
+  .architecture-frame-placeholder {
+    height: 720px;
+  }
+}

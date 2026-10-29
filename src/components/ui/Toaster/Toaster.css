@@ -1,0 +1,30 @@
+[data-sonner-toaster].toaster[data-x-position='right'] {
+  --toast-slide-distance: calc(100% + var(--offset-right) + 16px);
+}
+
+/* La duración coincide con el desmontaje de Sonner (200 ms). */
+[data-sonner-toaster].toaster[data-x-position='right']
+  [data-sonner-toast][data-swiping='false'][data-swipe-out='false'] {
+  transition:
+    transform 200ms,
+    opacity 200ms,
+    height 200ms,
+    box-shadow 200ms;
+}
+
+[data-sonner-toaster].toaster[data-x-position='right'] [data-sonner-toast][data-mounted='false'],
+[data-sonner-toaster].toaster[data-x-position='right']
+  [data-sonner-toast][data-removed='true'][data-front='true'][data-swipe-out='false'] {
+  --y: translateX(var(--toast-slide-distance));
+}
+
+[data-sonner-toaster].toaster[data-x-position='right']
+  [data-sonner-toast][data-removed='true'][data-front='false'][data-swipe-out='false'][data-expanded='true'] {
+  --y: translateX(var(--toast-slide-distance)) translateY(calc(var(--lift) * var(--offset)));
+}
+
+[data-sonner-toaster].toaster[data-x-position='right']
+  [data-sonner-toast][data-removed='true'][data-front='false'][data-swipe-out='false'][data-expanded='false'] {
+  --y: translateX(var(--toast-slide-distance))
+    translateY(calc(var(--lift-amount) * var(--toasts-before))) scale(calc(-1 * var(--scale)));
+}

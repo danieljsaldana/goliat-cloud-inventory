@@ -1,0 +1,17 @@
+.dashboard-breadcrumb {
+  flex-wrap: wrap;
+  row-gap: 0.75rem;
+}
+.dashboard-breadcrumb > [data-slot='breadcrumb'] {
+  min-width: 0;
+}
+.dashboard-breadcrumb > .date-label {
+  margin-left: auto;
+  justify-content: flex-end;
+  text-align: right;
+}
+@media (max-width: 720px) {
+  .dashboard-breadcrumb > .date-label {
+    flex-basis: 100%;
+  }
+}

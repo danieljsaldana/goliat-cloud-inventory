@@ -1,0 +1,131 @@
+.subscription-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 24px;
+}
+@media (max-width: 720px) {
+  .subscription-panel {
+    padding: 20px;
+  }
+}
+.subscription-panel > .panel-heading {
+  margin-bottom: 0;
+}
+.subscription-panel > .pagination-footer {
+  margin-top: auto;
+}
+.subscription-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.subscription-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: min(100%, 22rem);
+  padding: 0 0.625rem;
+  border: 1px solid var(--control-line);
+  border-radius: 6px;
+  color: var(--muted-foreground);
+}
+.subscription-search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  border: 0;
+  background: none;
+  font-size: var(--text-control);
+  color: inherit;
+}
+.subscription-search .text-button {
+  min-width: 2.75rem;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.subscription-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+.subscription-list button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  border: 1px solid transparent;
+  text-align: left;
+  white-space: normal;
+  padding: 16px 18px;
+  border-radius: 8px;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.subscription-list button:hover,
+.subscription-list button:focus-visible,
+.subscription-list .is-selected {
+  background: var(--hover-surface);
+  border-color: var(--hover-border);
+}
+.subscription-list .is-selected {
+  border-color: var(--brand);
+}
+.subscription-avatar {
+  width: 31px;
+  height: 31px;
+  background: #f6f7f9;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  color: var(--muted-foreground);
+  border-radius: 7px;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+.subscription-list button:hover .subscription-avatar,
+.subscription-list button:focus-visible .subscription-avatar,
+.subscription-list .is-selected .subscription-avatar {
+  background: var(--icon-surface-hover);
+  border-color: var(--hover-border);
+  color: var(--brand);
+}
+.subscription-list button > span:nth-child(2) {
+  font-size: var(--text-sm);
+  color: #6c7680;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  flex: 1;
+}
+.subscription-list small {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--muted-foreground);
+  margin-top: 5px;
+}
+.subscription-list strong {
+  font-size: var(--text-table);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #555f68;
+  margin-left: auto;
+  flex-shrink: 0;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #f3f5f7;
+  white-space: nowrap;
+}
+.subscription-list .is-selected strong {
+  background: var(--icon-surface-hover);
+  color: var(--brand-hover);
+}
+.subscription-list button > svg {
+  color: var(--muted-foreground);
+}
+.subscription-list .is-selected > svg {
+  color: var(--brand);
+}

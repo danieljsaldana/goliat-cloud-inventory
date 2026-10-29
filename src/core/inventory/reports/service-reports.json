@@ -1,0 +1,737 @@
+[
+  {
+    "id": "external-tenants",
+    "labelKey": "reports.b2cTenants",
+    "group": "security",
+    "icon": "key",
+    "types": [
+      "microsoft.azureactivedirectory/b2cdirectories",
+      "microsoft.azureactivedirectory/ciamdirectories"
+    ]
+  },
+  {
+    "id": "redis",
+    "labelKey": "reports.redisCaches",
+    "group": "databases",
+    "icon": "database",
+    "types": ["microsoft.cache/redis"]
+  },
+  {
+    "id": "managed-redis",
+    "labelKey": "reports.managedRedis",
+    "group": "databases",
+    "icon": "database",
+    "types": ["microsoft.cache/redisenterprise"]
+  },
+  {
+    "id": "sql-servers",
+    "labelKey": "reports.sqlServers",
+    "group": "databases",
+    "icon": "database",
+    "types": ["microsoft.sql/servers", "microsoft.sql/managedinstances"]
+  },
+  {
+    "id": "sql-databases",
+    "labelKey": "reports.sqlDatabases",
+    "group": "databases",
+    "icon": "database",
+    "types": ["microsoft.sql/servers/databases", "microsoft.sql/managedinstances/databases"]
+  },
+  {
+    "id": "cosmos-db",
+    "labelKey": "reports.cosmosDb",
+    "group": "databases",
+    "icon": "database",
+    "types": ["microsoft.documentdb/databaseaccounts", "microsoft.documentdb/mongoclusters"]
+  },
+  {
+    "id": "container-registries",
+    "labelKey": "reports.containerRegistries",
+    "group": "containers",
+    "icon": "boxes",
+    "types": ["microsoft.containerregistry/registries"]
+  },
+  {
+    "id": "service-bus",
+    "labelKey": "reports.serviceBus",
+    "group": "integration",
+    "icon": "network",
+    "types": ["microsoft.servicebus/namespaces"]
+  },
+  {
+    "id": "dns-zones",
+    "labelKey": "reports.dnsZones",
+    "group": "network",
+    "icon": "globe",
+    "types": ["microsoft.network/dnszones", "microsoft.network/privatednszones"]
+  },
+  {
+    "id": "managed-disks",
+    "labelKey": "reports.managedDisks",
+    "group": "storage",
+    "icon": "database",
+    "types": [
+      "microsoft.compute/disks",
+      "microsoft.compute/snapshots",
+      "microsoft.compute/diskencryptionsets",
+      "microsoft.compute/diskaccesses"
+    ]
+  },
+  {
+    "id": "webhooks",
+    "labelKey": "reports.webhooks",
+    "group": "integration",
+    "icon": "network",
+    "types": [
+      "microsoft.containerregistry/registries/webhooks",
+      "microsoft.automation/automationaccounts/webhooks"
+    ]
+  },
+  {
+    "id": "shared-dashboards",
+    "labelKey": "reports.sharedDashboards",
+    "group": "monitoring",
+    "icon": "chart",
+    "types": ["microsoft.portal/dashboards", "microsoft.dashboard/dashboards"]
+  },
+  {
+    "id": "route-tables",
+    "labelKey": "reports.routeTables",
+    "group": "network",
+    "icon": "network",
+    "types": ["microsoft.network/routetables"]
+  },
+  {
+    "id": "vm-scale-sets",
+    "labelKey": "reports.vmScaleSets",
+    "group": "compute",
+    "icon": "server",
+    "types": ["microsoft.compute/virtualmachinescalesets"]
+  },
+  {
+    "id": "logic-apps",
+    "labelKey": "reports.logicApps",
+    "group": "integration",
+    "icon": "network",
+    "types": ["microsoft.logic/workflows", "microsoft.web/sites"]
+  },
+  {
+    "id": "api-connections",
+    "labelKey": "reports.apiConnections",
+    "group": "integration",
+    "icon": "network",
+    "types": ["microsoft.web/connections", "microsoft.web/customapis"]
+  },
+  {
+    "id": "log-analytics",
+    "labelKey": "reports.logAnalytics",
+    "group": "monitoring",
+    "icon": "activity",
+    "types": ["microsoft.operationalinsights/workspaces"]
+  },
+  {
+    "id": "automation-accounts",
+    "labelKey": "reports.automationAccounts",
+    "group": "integration",
+    "icon": "activity",
+    "types": ["microsoft.automation/automationaccounts"]
+  },
+  {
+    "id": "functions",
+    "labelKey": "reports.functions",
+    "group": "web",
+    "icon": "globe",
+    "types": ["microsoft.web/sites"]
+  },
+  {
+    "id": "container-apps",
+    "labelKey": "reports.containerApps",
+    "group": "containers",
+    "icon": "boxes",
+    "types": [
+      "microsoft.app/containerapps",
+      "microsoft.app/managedenvironments",
+      "microsoft.app/jobs"
+    ]
+  },
+  {
+    "id": "event-hubs",
+    "labelKey": "reports.eventHubs",
+    "group": "integration",
+    "icon": "network",
+    "types": ["microsoft.eventhub/namespaces", "microsoft.eventhub/clusters"]
+  },
+  {
+    "id": "event-grid",
+    "labelKey": "reports.eventGrid",
+    "group": "integration",
+    "icon": "network",
+    "types": [
+      "microsoft.eventgrid/topics",
+      "microsoft.eventgrid/systemtopics",
+      "microsoft.eventgrid/domains",
+      "microsoft.eventgrid/namespaces"
+    ]
+  },
+  {
+    "id": "runbooks",
+    "labelKey": "reports.automationRunbooks",
+    "group": "integration",
+    "icon": "activity",
+    "types": ["microsoft.automation/automationaccounts/runbooks"]
+  },
+  {
+    "id": "postgresql",
+    "labelKey": "reports.postgresql",
+    "group": "databases",
+    "icon": "database",
+    "types": [
+      "microsoft.dbforpostgresql/flexibleservers",
+      "microsoft.dbforpostgresql/servers",
+      "microsoft.dbforpostgresql/servergroupsv2"
+    ],
+    "headers": [
+      "name",
+      "state",
+      "version",
+      "storageSizeGB",
+      "backupRetentionDays",
+      "storageAutoGrow",
+      "geoRedundantBackup",
+      "highAvailabilityMode",
+      "highAvailabilityState",
+      "publicNetworkAccess",
+      "fullyQualifiedDomainName",
+      "availabilityZone",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "mysql",
+    "labelKey": "reports.mysql",
+    "group": "databases",
+    "icon": "database",
+    "types": ["microsoft.dbformysql/flexibleservers", "microsoft.dbformysql/servers"],
+    "headers": [
+      "name",
+      "state",
+      "version",
+      "storageSizeGB",
+      "backupRetentionDays",
+      "storageAutoGrow",
+      "geoRedundantBackup",
+      "highAvailabilityMode",
+      "highAvailabilityState",
+      "publicNetworkAccess",
+      "fullyQualifiedDomainName",
+      "availabilityZone",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "data-factory",
+    "labelKey": "reports.dataFactory",
+    "group": "data",
+    "icon": "network",
+    "types": ["microsoft.datafactory/factories"],
+    "headers": [
+      "name",
+      "publicNetworkAccess",
+      "identityType",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "synapse",
+    "labelKey": "reports.synapse",
+    "group": "data",
+    "icon": "database",
+    "types": ["microsoft.synapse/workspaces"],
+    "headers": [
+      "name",
+      "publicNetworkAccess",
+      "managedResourceGroupName",
+      "managedVirtualNetwork",
+      "sqlEndpoint",
+      "developmentEndpoint",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "databricks",
+    "labelKey": "reports.databricks",
+    "group": "data",
+    "icon": "boxes",
+    "types": ["microsoft.databricks/workspaces"],
+    "headers": [
+      "name",
+      "workspaceUrl",
+      "workspaceId",
+      "publicNetworkAccess",
+      "managedResourceGroupId",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "ai-search",
+    "labelKey": "reports.aiSearch",
+    "group": "data",
+    "icon": "sparkles",
+    "types": ["microsoft.search/searchservices"],
+    "headers": [
+      "name",
+      "replicaCount",
+      "partitionCount",
+      "publicNetworkAccess",
+      "disableLocalAuth",
+      "status",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "managed-identities",
+    "labelKey": "reports.managedIdentities",
+    "group": "security",
+    "icon": "key",
+    "types": ["microsoft.managedidentity/userassignedidentities"],
+    "headers": [
+      "name",
+      "clientId",
+      "principalId",
+      "tenantId",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "azure-arc",
+    "labelKey": "reports.azureArc",
+    "group": "compute",
+    "icon": "server",
+    "types": ["microsoft.hybridcompute/machines"],
+    "headers": [
+      "name",
+      "status",
+      "osName",
+      "osVersion",
+      "agentVersion",
+      "machineFqdn",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "openai",
+    "labelKey": "reports.openAi",
+    "group": "data",
+    "icon": "sparkles",
+    "types": ["microsoft.cognitiveservices/accounts"],
+    "headers": [
+      "name",
+      "endpoint",
+      "publicNetworkAccess",
+      "disableLocalAuth",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ],
+    "kindContains": "openai"
+  },
+  {
+    "id": "machine-learning",
+    "labelKey": "reports.machineLearning",
+    "group": "data",
+    "icon": "sparkles",
+    "types": ["microsoft.machinelearningservices/workspaces"],
+    "headers": [
+      "name",
+      "publicNetworkAccess",
+      "workspaceId",
+      "identityType",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "public-ips",
+    "labelKey": "reports.publicIps",
+    "group": "network",
+    "icon": "globe",
+    "types": ["microsoft.network/publicipaddresses", "microsoft.network/publicipprefixes"],
+    "headers": [
+      "name",
+      "ipAddress",
+      "ipVersion",
+      "allocationMethod",
+      "prefixLength",
+      "dnsName",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "load-balancers",
+    "labelKey": "reports.loadBalancers",
+    "group": "network",
+    "icon": "network",
+    "types": ["microsoft.network/loadbalancers"],
+    "headers": [
+      "name",
+      "frontendCount",
+      "backendPoolCount",
+      "loadBalancingRuleCount",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "application-gateways",
+    "labelKey": "reports.applicationGateways",
+    "group": "network",
+    "icon": "network",
+    "types": ["microsoft.network/applicationgateways"],
+    "headers": [
+      "name",
+      "capacity",
+      "operationalState",
+      "frontendCount",
+      "backendPoolCount",
+      "firewallPolicyId",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "firewalls",
+    "labelKey": "reports.firewalls",
+    "group": "network",
+    "icon": "shield",
+    "types": ["microsoft.network/azurefirewalls"],
+    "headers": [
+      "name",
+      "threatIntelMode",
+      "firewallPolicyId",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "firewall-policies",
+    "labelKey": "reports.firewallPolicies",
+    "group": "network",
+    "icon": "shield",
+    "types": ["microsoft.network/firewallpolicies"],
+    "headers": [
+      "name",
+      "threatIntelMode",
+      "basePolicyId",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "front-door",
+    "labelKey": "reports.frontDoor",
+    "group": "network",
+    "icon": "globe",
+    "types": ["microsoft.network/frontdoors", "microsoft.cdn/profiles"],
+    "headers": [
+      "name",
+      "frontDoorId",
+      "resourceState",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "virtual-network-gateways",
+    "labelKey": "reports.virtualNetworkGateways",
+    "group": "network",
+    "icon": "network",
+    "types": [
+      "microsoft.network/virtualnetworkgateways",
+      "microsoft.network/vpngateways",
+      "microsoft.network/expressroutegateways"
+    ],
+    "headers": [
+      "name",
+      "gatewayType",
+      "vpnType",
+      "enableBgp",
+      "activeActive",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "nat-gateways",
+    "labelKey": "reports.natGateways",
+    "group": "network",
+    "icon": "network",
+    "types": ["microsoft.network/natgateways"],
+    "headers": [
+      "name",
+      "idleTimeoutInMinutes",
+      "subnetCount",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "bastion",
+    "labelKey": "reports.bastion",
+    "group": "network",
+    "icon": "shield",
+    "types": ["microsoft.network/bastionhosts"],
+    "headers": [
+      "name",
+      "dnsName",
+      "enableTunneling",
+      "enableIpConnect",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "network-interfaces",
+    "labelKey": "reports.networkInterfaces",
+    "group": "network",
+    "icon": "network",
+    "types": ["microsoft.network/networkinterfaces"],
+    "headers": [
+      "name",
+      "virtualMachineId",
+      "acceleratedNetworking",
+      "ipConfigurationCount",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  },
+  {
+    "id": "application-insights",
+    "labelKey": "reports.applicationInsights",
+    "group": "monitoring",
+    "icon": "activity",
+    "types": ["microsoft.insights/components"],
+    "headers": [
+      "name",
+      "applicationType",
+      "workspaceResourceId",
+      "publicNetworkAccessForIngestion",
+      "publicNetworkAccessForQuery",
+      "provisioningState",
+      "resourceGroup",
+      "location",
+      "subscriptionName",
+      "subscriptionId",
+      "resourceProvider",
+      "type",
+      "kind",
+      "skuName",
+      "skuTier",
+      "tags_json",
+      "id"
+    ]
+  }
+]

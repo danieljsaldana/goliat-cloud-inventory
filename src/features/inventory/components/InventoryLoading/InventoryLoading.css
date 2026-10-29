@@ -1,0 +1,24 @@
+.inventory-skeleton-kpi {
+  gap: 16px;
+  padding: 24px;
+  min-height: 175px;
+}
+.inventory-skeleton-panel {
+  gap: 20px;
+  padding: 24px;
+  min-width: 0;
+}
+.inventory-loading .overview-charts + .inventory-skeleton-table {
+  margin-top: 24px;
+}
+@media (max-width: 720px) {
+  .inventory-skeleton-kpi,
+  .inventory-skeleton-panel {
+    padding: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inventory-loading [data-slot='skeleton'] {
+    animation: none;
+  }
+}

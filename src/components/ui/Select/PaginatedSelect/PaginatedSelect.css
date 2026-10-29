@@ -1,0 +1,42 @@
+.paginated-select-trigger {
+  justify-content: space-between;
+  gap: 12px;
+  text-align: start;
+  min-width: 0;
+}
+.paginated-select-trigger > [data-slot='select-value'] {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.paginated-select-trigger > svg {
+  flex-shrink: 0;
+}
+.paginated-select-content {
+  z-index: 60;
+  width: max(20rem, var(--radix-popover-trigger-width));
+  max-width: calc(100vw - 32px);
+  max-height: var(--radix-popover-content-available-height);
+  overflow-y: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+}
+.paginated-select-content [data-slot='command-list'] {
+  max-height: min(18rem, 40vh);
+}
+.paginated-select-content [data-slot='command-item'] > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.paginated-select-content [data-slot='command-item'] > svg {
+  flex-shrink: 0;
+}
+.paginated-select-content > .pagination-footer {
+  padding: 12px 8px 8px;
+}

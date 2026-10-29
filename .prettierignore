@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.archify/
+.local-dev/
+.local-validation-tools/
+dist/
+_site/
+src/assets/
+vendor/
+docs/architecture.html

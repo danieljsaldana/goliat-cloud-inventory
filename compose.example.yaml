@@ -1,0 +1,37 @@
+# PostgreSQL es externo o accesible desde la red de los contenedores. Los tres procesos usan la misma versión del código.
+# Las credenciales DDL se suministran solo al job de inicialización.
+# LOG_ENABLED, LOG_LEVEL y LOG_HTTP_ENABLED se configuran en el env_file de cada proceso.
+services:
+  migrate:
+    image: cloud-inventory-migrator:${APP_VERSION:-local}
+    build:
+      context: .
+      target: migrator
+    env_file: .env.migrations
+    volumes: ['./certs:/app/certs:ro']
+    restart: 'no'
+  web:
+    image: cloud-inventory-web:${APP_VERSION:-local}
+    build:
+      context: .
+      target: runner
+    env_file: .env
+    volumes: ['./certs:/app/certs:ro']
+    ports: ['4000:4000']
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+  azure:
+    image: cloud-inventory-collector:${APP_VERSION:-local}
+    build:
+      context: .
+      target: collector
+    env_file: .env.azure
+    volumes: ['./certs:/app/certs:ro']
+    command: ['azure']
+    profiles: ['collectors']
+    restart: 'no'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully

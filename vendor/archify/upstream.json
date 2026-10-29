@@ -1,0 +1,49 @@
+{
+  "repository": "https://github.com/tt-a1i/archify",
+  "version": "3.0.1",
+  "revision": "2ab3cae7ac2c2a55d7386ca789d03c4fcd31816c",
+  "files": {
+    "assets/JetBrainsMono-OFL.txt": "c1ab7c666206842a02b35b30770dac0d7a10156ed401c9defc3f02a754d89e90",
+    "assets/template.html": "b0b550d644b77cad401bbc4b21375919ef01db45d235122a0ee42b732cb34233",
+    "es.json": "1389068b7dddb5e72ed425d12084ca9104942bef933440a16113d60619f1daf3",
+    "LICENSE": "b799ab081703e7821ae5096d2c1abdf14bbdc75e8ea1c4045998c36ed6db9706",
+    "renderers/architecture/grid.mjs": "f6de99c32436feed3378b0ddef516bb4732ff27a89c543b50635d4d14a15a55a",
+    "renderers/architecture/labels.mjs": "7cf5bb20c3039f49683fe81a461110c42de0a006a58c867c47fdd3089a58bbbc",
+    "renderers/architecture/render-architecture.mjs": "3831899e2e12cedd2e8225285fc9e50e8cd032f036fac87264b0bd5ddc60fda6",
+    "renderers/architecture/routing.mjs": "b952b3ec0364827fa7fbff10a28e2a83f0ba11921c67f5ee224e5ef58c833cbb",
+    "renderers/shared/atomic-output.mjs": "f804d66d1801ac2dadc9d0a4c334645cfbb7a8cd1a7de112ddfb952c056a580b",
+    "renderers/shared/brand-marks.mjs": "5cfc3c517ca6fe7e867c208101059dd7747ca3de3c9934b17583d6cf20336620",
+    "renderers/shared/cli.mjs": "097f968a614008b07972f56de995e5b933c61ee0ba0d16d967c0a97c6d92e9d7",
+    "renderers/shared/desktop-readability.mjs": "de68f2ed92573ae714659d556f97eca01296f4e0063b94c429370efcc38f909a",
+    "renderers/shared/diagnostics.mjs": "d052a0e72eec2a2bf29c70dacdd3350100e2c76fc2627d14f79234077c571e3f",
+    "renderers/shared/engineering-profiles.mjs": "7e99f9d5423f66cc9ab6224da56dc2d5aa6c6faec29178034794e9db6b5b2889",
+    "renderers/shared/generated-brand-marks.mjs": "0f157d229c12df6f53763a3b88684baa5803a52484c49c4d34ec40b8743beea2",
+    "renderers/shared/generated-validators.mjs": "33697207b90a0eb0d0566a1c46eaf3cb58f85cef0f43caeec991017ade34c2b9",
+    "renderers/shared/geometry.mjs": "b25d849e6e256b1eef37fa3bb88712d0617d6eb646a2355a934505fcaa9be75d",
+    "renderers/shared/i18n.mjs": "03f5356110a08b2cf684a484af5502bb392482de1ef61123707c6da2724c5201",
+    "renderers/shared/layout-report.mjs": "4b5fa6e1af2b2efdd57d7fac16359089a059a745cc19ad1595ba42c3e483aec7",
+    "renderers/shared/legend.mjs": "1cc5033a188690fc5f5fef1bd7915a275e6c790bb3061c63c00a97b234625cbe",
+    "renderers/shared/output-path.mjs": "7422139101abd93493918898a97bed06f2212bfd411d3514cd229b6d57a3797e",
+    "renderers/shared/path-semantics.mjs": "4ef002af9061c06634a07de6d199fd7d13e6c50561c792fd018118bf3e065f52",
+    "renderers/shared/portable-path.mjs": "26130cbcdae9b9f082486aeb5feec9c5fe57905d2ed8e30c8081b9710e2e8ac3",
+    "renderers/shared/repository-evidence.mjs": "19c652af2afec5604e9ce23d356f3cc2c5d6146592531036da20e79f4db3ed1d",
+    "renderers/shared/repository-location.mjs": "9ee8294c39d1be40f5aca3334fdfc7527ef9b224d6c1e69ca57aefc6a8c77856",
+    "renderers/shared/route-quality.mjs": "0ae7e16210f8e00bb615da34d5323dee65efe52ceb11a40ea49fdd10b5257daa",
+    "renderers/shared/sidecar-path.mjs": "c23cac8bcc265a74e2920c58d0968d1ffa06c1328bdd9cfd07755d4df2f22974",
+    "renderers/shared/spatial-grid.mjs": "e728bf6a729972f95ae09e368ea370490d10ff94d49debe2fab2e9bac923ee1a",
+    "renderers/shared/text-fit.mjs": "ebd499072ef4fe31c9aabf45a01c204a9c2c142d45f087c3240673f90f477038",
+    "renderers/shared/utils.mjs": "422b66c6945de473b1f96e4f3641339b6a24c8ccef60795a38ca2386e10bc26b",
+    "renderers/shared/validator.mjs": "7460d7fcbcdf710649256c5e96142ae26d807a655d3296ee8caf7f5e158622cc",
+    "THIRD_PARTY_NOTICES.md": "0b7fb59365dc21c93b0f62526d74ee913aeec9ae532c112bc76afa7edcd56e14"
+  },
+  "localOverrides": {
+    "renderers/shared/brand-marks.mjs": {
+      "sha256": "5d41f99d3cebea3bfcc7f38038b1c1840faa1cbc1911e41dfab1a8b902d7744d",
+      "description": "Registro local del icono Microsoft Azure de ProviderMark para reutilizar la marca del panel sin descargas."
+    },
+    "assets/template.html": {
+      "sha256": "347662349004afc114bb5836715d4381c726dc89ec0bfac8e82100ba1dc48289",
+      "description": "Ejemplos visuales Azure y ajuste del SVG al visor en presentación móvil, conservando el zoom."
+    }
+  }
+}

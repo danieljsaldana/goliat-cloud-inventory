@@ -1,0 +1,56 @@
+@import '@fontsource/dm-sans/latin-400.css';
+@import '@fontsource/dm-sans/latin-500.css';
+@import '@fontsource/dm-sans/latin-600.css';
+@import '@fontsource/dm-sans/latin-700.css';
+
+:root {
+  /* Respeta el tamaño de letra del navegador; todos los textos escalan con rem. */
+  font-size: 100%;
+  line-height: 1.5;
+  font-family:
+    'DM Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: #16324f;
+  background: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --brand: #0078d4;
+  --brand-hover: #005a9e;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --text-sm: 0.875rem;
+  --text-table: 0.875rem;
+  --text-base: 0.9375rem;
+  --text-control: var(--text-base);
+  --text-lg: 1rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: 2.25rem;
+  --text-stat: 1.5rem;
+  --text-kpi: 1.875rem;
+  --muted-foreground: #526779;
+  --control-line: #8197ad;
+  --sidebar-width: 18rem;
+  --management-page-max-width: 1680px;
+  --line: #dae6f0;
+  --brand-soft: #edf6ff;
+  --success: #267457;
+  --soft-success: #eef8f2;
+  --warning: #78571e;
+  --soft-warning: #fffaf1;
+  --hover-surface: #f2f8ff;
+  --hover-border: #65a8df;
+  --icon-surface: #edf6ff;
+  --icon-surface-hover: #d9edff;
+}
+
+@media (max-width: 720px) {
+  :root {
+    /* Los campos mantienen 1rem en móvil para evitar zoom al enfocarlos en iOS. */
+    --text-control: 1rem;
+  }
+}

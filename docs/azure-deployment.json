@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Goliat · Despliegue en Azure",
+    "output": "azure-deployment.html",
+    "locale": "es",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "users",
+      "type": "frontend",
+      "label": "Usuarios de Goliat",
+      "sublabel": "Inventario, FinOps y administración",
+      "tag": "Navegador · HTTPS",
+      "pos": [50, 40],
+      "size": [210, 75]
+    },
+    {
+      "id": "entra",
+      "type": "security",
+      "label": "Microsoft Entra ID",
+      "sublabel": "Inicio de sesión y API de inventario",
+      "tag": "Identidades y permisos",
+      "pos": [50, 540],
+      "size": [210, 75]
+    },
+    {
+      "id": "web",
+      "type": "backend",
+      "label": "Azure App Service",
+      "sublabel": "web-goliat-dev-<sufijo>",
+      "tag": "Next.js · Node 24 · Identidad de sistema",
+      "pos": [50, 210],
+      "size": [210, 75]
+    },
+    {
+      "id": "storage",
+      "type": "cloud",
+      "label": "Azure Storage",
+      "sublabel": "stgoliat<sufijo>",
+      "tag": "Standard LRS · Blob, Queue y Table",
+      "pos": [350, 210],
+      "size": [210, 75]
+    },
+    {
+      "id": "function",
+      "type": "backend",
+      "label": "Azure Functions",
+      "sublabel": "func-goliat-dev-<sufijo>",
+      "tag": "Node 22 · Timer, cola y API",
+      "pos": [650, 210],
+      "size": [210, 75]
+    },
+    {
+      "id": "postgres",
+      "type": "database",
+      "label": "PostgreSQL Flexible Server",
+      "sublabel": "pg-goliat-dev-<sufijo>",
+      "tag": "PostgreSQL 17 · B1ms · North Europe",
+      "pos": [350, 380],
+      "size": [210, 75]
+    },
+    {
+      "id": "identity",
+      "type": "security",
+      "label": "Identidad administrada",
+      "sublabel": "id-goliat-dev",
+      "tag": "Identidad de usuario de la Function",
+      "pos": [650, 380],
+      "size": [210, 75]
+    },
+    {
+      "id": "cost",
+      "type": "cloud",
+      "label": "Azure Cost Management",
+      "sublabel": "Costes reales y amortizados",
+      "tag": "Cost Management Reader",
+      "pos": [350, 40],
+      "size": [210, 75]
+    },
+    {
+      "id": "resource-graph",
+      "type": "cloud",
+      "label": "Resource Graph y ARM",
+      "sublabel": "Recursos de las suscripciones",
+      "tag": "Lectura del inventario",
+      "pos": [650, 40],
+      "size": [210, 75]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "rg-goliat-dev",
+      "wraps": ["web", "storage", "function", "postgres", "identity"],
+      "pad": 30
+    },
+    {
+      "kind": "region",
+      "label": "web-plan-goliat-dev · F1",
+      "wraps": ["web"],
+      "pad": 25
+    },
+    {
+      "kind": "region",
+      "label": "plan-goliat-dev · Flex Consumption",
+      "wraps": ["function"],
+      "pad": 15
+    }
+  ],
+  "connections": [
+    {
+      "id": "browser-https",
+      "from": "users",
+      "to": "web",
+      "label": "HTTPS · Sesión"
+    },
+    {
+      "id": "web-blob",
+      "from": "web",
+      "to": "storage",
+      "label": "Lee JSON · RBAC"
+    },
+    {
+      "id": "function-blob",
+      "from": "function",
+      "to": "storage",
+      "label": "Publica JSON"
+    },
+    {
+      "id": "web-refresh",
+      "from": "web",
+      "to": "function",
+      "label": "Generar inventario · Entra"
+    },
+    {
+      "id": "function-inventory",
+      "from": "function",
+      "to": "resource-graph",
+      "label": "Consulta recursos"
+    },
+    {
+      "id": "web-database",
+      "from": "web",
+      "to": "postgres",
+      "label": "Snapshots · SQL con TLS",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "web-costs",
+      "from": "web",
+      "to": "cost",
+      "label": "Consulta gastos · RBAC"
+    },
+    {
+      "id": "web-auth",
+      "from": "web",
+      "to": "entra",
+      "label": "Autenticación Entra",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "function-identity",
+      "from": "identity",
+      "to": "function",
+      "label": "Credencial administrada"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Despliegue de referencia",
+      "items": [
+        "Los siete recursos del grupo rg-goliat-dev corresponden a los módulos Bicep de iac/; el sufijo lo genera uniqueString al desplegar.",
+        "Este ejemplo sitúa web, Function, Storage, planes e identidad en West Europe y PostgreSQL en North Europe; ajusta las regiones a tu despliegue.",
+        "Los marcos F1 y Flex Consumption representan los dos planes de hospedaje de referencia.",
+        "Entra ID, Resource Graph, ARM y Cost Management son servicios de plataforma; no son recursos adicionales de este grupo.",
+        "Los nombres son ejemplos del entorno goliat-dev, no identificadores de recursos reales. El diagrama no consulta Azure en tiempo real."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Inventario y FinOps",
+      "items": [
+        "La Function recoge recursos y publica cloud-inventory/azure/latest.json. Storage también guarda function-releases y function-state, además de las colas y tablas del host.",
+        "La web lee el JSON con su identidad de sistema, normaliza el inventario y guarda snapshots en PostgreSQL.",
+        "La actualización manual invoca la API de la Function con un token Entra y el permiso Inventory.Generate; el timer permite la generación programada.",
+        "FinOps consulta Cost Management desde la web con Cost Management Reader en las suscripciones configuradas; esos gastos no se importan a PostgreSQL.",
+        "La administración consulta métricas de Azure y gestiona el timer y las etiquetas mediante permisos limitados."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Identidad y red",
+      "items": [
+        "La Function usa id-goliat-dev y permisos RBAC para inventario y almacenamiento. La web tiene una identidad de sistema para Blob Storage, Cost Management y administración.",
+        "El acceso al dashboard usa Microsoft Entra ID y una sesión Auth.js. Las credenciales de inicio de sesión y PostgreSQL permanecen en el servidor.",
+        "La configuración de referencia usa endpoints públicos, sin integración VNet ni private endpoints. PostgreSQL limita el acceso por reglas de firewall y usa TLS.",
+        "Storage no permite blobs públicos ni autenticación por claves compartidas; el acceso a datos requiere identidad y RBAC.",
+        "La configuración de referencia no incluye Application Insights ni Log Analytics; la administración consulta métricas de plataforma."
+      ]
+    }
+  ]
+}
