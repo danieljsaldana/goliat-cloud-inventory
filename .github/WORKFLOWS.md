@@ -118,7 +118,7 @@ En **Actions → Goliat - Release notes → Run workflow**, selecciona `main` e 
 - `previous_tag`: opcional, por ejemplo `v1.0.0`; vacío deja que GitHub elija.
 - `create_draft`: desactivado genera solo una vista previa; activado crea además una release en borrador.
 
-El flujo exige una CI completa de ejecución correcta para ese commit de `main`.
+El flujo exige una ejecución de CI correcta para ese commit de `main`.
 Las notas aparecen en **Summary** y como artefacto `release-notes`, con retención de 30 días.
 Se generan desde las PR integradas usando [release.yml](release.yml), agrupadas por etiquetas:
 `dependencies`, `bug`, `enhancement`/`accessibility`, `documentation` y otros cambios.
