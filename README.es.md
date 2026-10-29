@@ -174,7 +174,7 @@ npm run lint && npm run format:check && npm run build
 
 Las pruebas de base de datos necesitan `RUN_DB_TESTS=1` y una base temporal cuyo nombre termine en `_test`; comprueban migraciones repetibles, publicación de las 73 vistas, semilla repetible, rollback y deduplicación. Las pruebas de navegador (`npx playwright install chromium && npm run test:e2e`) compilan y arrancan el servidor de producción en el puerto 4100 con su propia sesión demo, un esquema aleatorio y datos ficticios; cubren navegación, cambio ES/EN, filtros, gráficas, bloqueo de actualización para dos usuarios, FinOps, Administración y la vista Arquitectura en escritorio (español) y móvil (inglés).
 
-El workflow de pruebas ([.github/workflows/dashboard-check.yml](.github/workflows/dashboard-check.yml)) ejecuta las pruebas de la Function en Node 22 y las unitarias, de PostgreSQL 17 y de navegador en Node 24 en cada push y pull request. No necesita secretos. El workflow independiente de Pages publica solo la web estática del producto. Consulta [.github/README.md](.github/README.md).
+El workflow de pruebas ([.github/workflows/dashboard-check.yml](.github/workflows/dashboard-check.yml)) ejecuta las pruebas de la Function en Node 22 y las unitarias, de PostgreSQL 17 y de navegador en Node 24 en cada push y pull request. No necesita secretos. El workflow independiente de Pages publica solo la web estática del producto. Consulta [.github/WORKFLOWS.md](.github/WORKFLOWS.md).
 
 Las pruebas simulan los SDK cloud y no ejecutan un login real contra Entra ID. Antes de producción, validar tenant, permisos, TLS de PostgreSQL y la identidad Azure del entorno, y definir una política de retención de snapshots y blobs.
 
