@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/danieljsaldana/goliat-cloud-inventory/security/advisories/new
+    about: Report vulnerabilities privately, not in public issues.
+  - name: Documentation and troubleshooting
+    url: https://github.com/danieljsaldana/goliat-cloud-inventory/wiki
+    about: Setup, configuration and troubleshooting in English and Spanish.

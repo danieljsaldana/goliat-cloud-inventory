@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest an improvement.
+body:
+  - type: markdown
+    attributes:
+      value: Suggestions in English or Spanish are welcome. Use fictional examples and do not include sensitive data.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to achieve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

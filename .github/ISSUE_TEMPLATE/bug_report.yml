@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible problem with Goliat.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For vulnerabilities, use [private reporting](https://github.com/danieljsaldana/goliat-cloud-inventory/security/advisories/new).
+        Never include credentials, real inventory exports, tenant details or sensitive logs.
+        Reports in English or Spanish are welcome.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v1.0.0 or commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node.js version, browser and deployment method. Do not paste your environment file.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include a minimal example using fictional data.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include sanitised errors or screenshots where useful.
+    validations:
+      required: true

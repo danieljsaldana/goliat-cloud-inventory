@@ -241,6 +241,11 @@ Creado por [Daniel J. Saldaña](https://danieljsaldana.dev).
 
 El logo combina una nube y un bloque isométrico de inventario en azul Azure. `npm run assets:brand` regenera logo, favicon, icono Apple y portada social; véase [docs/social-image.md](docs/social-image.md).
 
+## Contribuciones y seguridad
+
+Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para preparar el entorno, ejecutar pruebas y enviar pull requests.
+Comunica las vulnerabilidades de forma privada como se indica en [SECURITY.md](SECURITY.md).
+
 ## Licencia
 
 [MIT](LICENSE) © Daniel J. Saldaña. Los avisos de terceros del renderizador de diagramas incluido están en [vendor/archify/THIRD_PARTY_NOTICES.md](vendor/archify/THIRD_PARTY_NOTICES.md).

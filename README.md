@@ -239,6 +239,11 @@ Created by [Daniel J. Saldaña](https://danieljsaldana.dev).
 
 The logo combines a cloud and an isometric inventory block in Azure blue. `npm run assets:brand` regenerates logo, favicon, Apple icon and the social cover; see [docs/social-image.md](docs/social-image.md).
 
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, tests and pull requests.
+Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+
 ## License
 
 [MIT](LICENSE) © Daniel J. Saldaña. Third-party notices for the vendored diagram renderer are in [vendor/archify/THIRD_PARTY_NOTICES.md](vendor/archify/THIRD_PARTY_NOTICES.md).

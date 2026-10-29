@@ -1,5 +1,20 @@
 # Pruebas automáticas
 
+## Protección y mantenimiento
+
+`main` exige pull requests y los checks `tests`, `functions` y `CodeQL (JavaScript)`.
+No exige aprobación de otra persona, para permitir el mantenimiento por un único autor.
+Los force pushes y el borrado de la rama están bloqueados; las ramas fusionadas se eliminan automáticamente.
+
+[`workflows/codeql.yml`](workflows/codeql.yml) analiza JavaScript en pushes y pull requests a `main`,
+semanalmente y bajo demanda. No ejecuta la aplicación ni necesita credenciales de Azure.
+Los resultados aparecen en **Security → Code scanning**; un análisis correcto no garantiza la ausencia de vulnerabilidades.
+
+[`dependabot.yml`](dependabot.yml) propone actualizaciones semanales para npm (web y Function)
+y GitHub Actions. Las actualizaciones compatibles se agrupan y no se fusionan automáticamente.
+También están activadas las alertas de dependencias, las actualizaciones de seguridad y los informes privados.
+Consulta [SECURITY.md](../SECURITY.md) y [CONTRIBUTING.md](../CONTRIBUTING.md).
+
 [`workflows/dashboard-check.yml`](workflows/dashboard-check.yml) ejecuta las pruebas del producto en cada push, pull request o lanzamiento manual.
 
 [`workflows/pages.yml`](workflows/pages.yml) publica la portada estática de `site/` en GitHub Pages.
