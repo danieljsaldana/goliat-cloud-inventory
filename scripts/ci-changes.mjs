@@ -90,7 +90,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   if (!process.env.GITHUB_OUTPUT) throw new Error('GITHUB_OUTPUT is required.');
   appendFileSync(
     process.env.GITHUB_OUTPUT,
-    Object.entries(selected)
+    Object.entries({ ...selected, changed_files: paths.length, full })
       .map(([suite, enabled]) => `${suite}=${enabled}\n`)
       .join(''),
   );

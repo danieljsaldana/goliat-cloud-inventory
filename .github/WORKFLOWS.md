@@ -102,6 +102,34 @@ La aplicación Next.js no se despliega en Pages.
 
 ## Proceso del mantenedor
 
+### Resumen de cada CI
+
+El job **CI** escribe un resumen en la pestaña **Summary** de la ejecución mediante
+`GITHUB_STEP_SUMMARY`: alcance del diff, comprobaciones correctas, fallidas, canceladas u omitidas
+y enlace a los jobs, logs y diagnósticos disponibles.
+El resumen se escribe también si fallan las suites; no convierte una omisión en una prueba superada.
+La publicación de Pages se comprueba por separado en su job posterior.
+
+### Preparar notas de versión
+
+En **Actions → Goliat - Release notes → Run workflow**, selecciona `main` e indica:
+
+- `tag`: nueva versión estable sin etiqueta existente, por ejemplo `v1.0.1`.
+- `previous_tag`: opcional, por ejemplo `v1.0.0`; vacío deja que GitHub elija.
+- `create_draft`: desactivado genera solo una vista previa; activado crea además una release en borrador.
+
+El flujo exige una ejecución de CI correcta para ese commit de `main`.
+Las notas aparecen en **Summary** y como artefacto `release-notes`, con retención de 30 días.
+Se generan desde las PR integradas usando [release.yml](release.yml), agrupadas por etiquetas:
+`dependencies`, `bug`, `enhancement`/`accessibility`, `documentation` y otros cambios.
+Añade las etiquetas adecuadas antes de preparar la versión; las PR sin clasificar no se pierden.
+
+No se publica una release automáticamente ni se cambia la versión de los paquetes.
+Revisa el borrador y publícalo manualmente en **Releases** cuando corresponda.
+Repetir la creación de un borrador para una versión ya existente falla explícitamente, sin sobrescribirla.
+El flujo solo se ejecuta manualmente en `main`. Sus jobs de notas y borrador tienen `contents: write`,
+necesario para las APIs de releases; la CI de contribuciones conserva sus permisos restringidos.
+
 1. Revisa el diff, los requisitos de instalación y que no haya información sensible.
 2. Autoriza la ejecución externa si corresponde.
 3. Espera al check **CI**; revisa los jobs omitidos y los avisos de CodeQL y Dependabot.
