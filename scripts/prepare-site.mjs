@@ -8,6 +8,12 @@ import spanish from '../src/core/i18n/locales/es.js';
 import { inventoryTagKeys } from '../src/features/administration/utils/inventoryTagKeys.js';
 
 const assets = new URL('../site/assets/', import.meta.url);
+for (const name of ['LICENSE', 'NOTICE', 'LICENSING.md']) {
+  await copyFile(
+    new URL(`../${name}`, import.meta.url),
+    new URL(`../site/${name}`, import.meta.url),
+  );
+}
 await mkdir(assets, { recursive: true });
 await mkdir(new URL('pagination/utils/', assets), { recursive: true });
 await mkdir(new URL('admin/', assets), { recursive: true });

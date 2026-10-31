@@ -11,6 +11,8 @@ test('cada ZIP cambia la fecha de una ruta del mismo tamaño para evitar que Kud
   const artifact = join(root, 'standalone');
   try {
     for (const file of [
+      'LICENSE',
+      'NOTICE',
       'server.js',
       '.next/BUILD_ID',
       'public/social/cloud-inventory.png',
@@ -47,6 +49,8 @@ test('cada ZIP cambia la fecha de una ruta del mismo tamaño para evitar que Kud
         });
         position.offset += 30 + nameLength + extra + compressed;
       }
+      assert.ok(records.some(({ path }) => path === 'LICENSE'));
+      assert.ok(records.some(({ path }) => path === 'NOTICE'));
       return records.find(({ path }) => path === 'server.js');
     }
     const before = await pack('before');

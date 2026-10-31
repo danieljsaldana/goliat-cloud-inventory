@@ -1,6 +1,7 @@
 export default {
   output: 'standalone',
   outputFileTracingIncludes: {
+    '/*': ['./LICENSE', './NOTICE'],
     '/docs/architecture.html': ['./docs/architecture.html'],
     '/docs/azure-deployment.html': ['./docs/azure-deployment.html'],
     '/api/ready': ['./server/migrations/*.sql', './server/schema/*.sql'],

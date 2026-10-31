@@ -1,7 +1,7 @@
 # Goliat - Cloud Inventory
 
 [![Tests](https://github.com/danieljsaldana/goliat-cloud-inventory/actions/workflows/dashboard-check.yml/badge.svg)](https://github.com/danieljsaldana/goliat-cloud-inventory/actions/workflows/dashboard-check.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: PolyForm Noncommercial](https://img.shields.io/badge/License-PolyForm_Noncommercial-blue.svg)](LICENSE)
 [![Node.js >= 22.12](https://img.shields.io/badge/node-%3E%3D22.12-339933?logo=node.js&logoColor=white)](package.json)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
 
@@ -248,4 +248,4 @@ Comunica las vulnerabilidades de forma privada como se indica en [SECURITY.md](S
 
 ## Licencia
 
-[MIT](LICENSE) © Daniel J. Saldaña. Los avisos de terceros del renderizador de diagramas incluido están en [vendor/archify/THIRD_PARTY_NOTICES.md](vendor/archify/THIRD_PARTY_NOTICES.md).
+[PolyForm Noncommercial 1.0.0](LICENSE) © Daniel J. Saldaña. Esta distribución permite uso, modificación y redistribución para los fines no comerciales contemplados en la licencia; no concede uso comercial con carácter general. El cambio no retira los permisos MIT de las copias ya distribuidas. Consulta [el alcance de la licencia](LICENSING.md). Los avisos de terceros del renderizador de diagramas se conservan en [vendor/archify/THIRD_PARTY_NOTICES.md](vendor/archify/THIRD_PARTY_NOTICES.md).
