@@ -1,6 +1,6 @@
 # Contributing
 
-Bug reports, focused improvements and documentation fixes are welcome.
+Bug reports, focused improvements and documentation fixes are welcome. Contributions to this distribution use the [repository licence](LICENSE). Read [licensing scope](LICENSING.md), including the noncommercial restriction and the status of earlier MIT distributions.
 For vulnerabilities, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## Local setup

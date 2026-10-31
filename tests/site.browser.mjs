@@ -667,7 +667,7 @@ test('la tarjeta social incluye imagen y metadatos estáticos sin JavaScript', a
   const publicUrl = 'https://danieljsaldana.github.io/goliat-cloud-inventory/';
   const imageUrl = `${publicUrl}assets/cloud-inventory.png`;
   const title = 'Goliat — Cloud Inventory';
-  const description = 'Your Azure, in perspective. Open-source inventory and FinOps, in one place.';
+  const description = 'Your Azure, in perspective. Inventory and FinOps for noncommercial use.';
   const alt = 'Goliat - Cloud Inventory logo and an illustration of Azure cloud resources.';
   try {
     await page.goto(state.url);
