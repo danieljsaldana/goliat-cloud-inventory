@@ -32,6 +32,8 @@ function crc32(bytes) {
 
 // ZIP pequeño sin dependencias de sistema. Allowlist: nunca empaquetar settings locales.
 const files = [
+  'LICENSE',
+  'NOTICE',
   'host.json',
   'package.json',
   'package-lock.json',
@@ -39,7 +41,9 @@ const files = [
 ];
 const state = { offset: 0, local: [], central: [] };
 for (const path of files) {
-  const bytes = await readFile(new URL(path, root));
+  const bytes = await readFile(
+    new URL(path, ['LICENSE', 'NOTICE'].includes(path) ? new URL('../', root) : root),
+  );
   const compressed = deflateRawSync(bytes);
   const name = Buffer.from(path, 'utf8');
   const local = Buffer.alloc(30);

@@ -53,3 +53,7 @@ Desktop.ini
 *.log
 *.swp
 *.swo
+# Legal notices copied by the static website build.
+/site/LICENSE
+/site/NOTICE
+/site/LICENSING.md

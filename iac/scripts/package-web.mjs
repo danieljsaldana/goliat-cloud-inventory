@@ -6,6 +6,8 @@ const [directory, output] = process.argv.slice(2);
 if (!directory || !output) throw new Error('Uso: node package-web.mjs <standalone-linux> <zip>');
 const root = await realpath(resolve(directory));
 for (const file of [
+  'LICENSE',
+  'NOTICE',
   'server.js',
   '.next/BUILD_ID',
   'public/social/cloud-inventory.png',

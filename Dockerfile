@@ -4,6 +4,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 FROM base AS dependencies
 COPY package.json package-lock.json ./
+COPY LICENSE NOTICE ./
 RUN npm ci
 
 # Comandos de migración e ingestión, ejecutados como jobs independientes.
@@ -24,6 +25,7 @@ RUN npm run build
 
 FROM base AS runner
 ENV NODE_ENV=production PORT=4000 HOSTNAME=0.0.0.0
+COPY --chown=node:node LICENSE NOTICE ./
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 COPY --from=builder --chown=node:node /app/public ./public
