@@ -1567,6 +1567,53 @@
           line-height: 1.75;
         }
       }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+      .sponsor-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 34px;
+        padding: 5px 9px;
+        border: 1px solid #e3cbd8;
+        border-radius: 8px;
+        background: #fff;
+        color: #783450;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.2;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .sponsor-button .icon {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        color: #aa3f75;
+      }
+      .sponsor-button:hover {
+        background: #fff3f8;
+        border-color: #c08ba7;
+      }
+      footer nav {
+        flex-wrap: wrap;
+        gap: 12px 20px;
+      }
+      @media (max-width: 800px) {
+        .header-actions .sponsor-button {
+          display: none;
+        }
+      }
     </style>
     <link rel="stylesheet" href="demo.css" />
     <link rel="stylesheet" href="admin-demo.css" />
@@ -1693,6 +1740,19 @@
                 <use href="assets/star.svg#star" /></svg
               ><span data-github-count></span></span
           ></a>
+          <a
+            class="sponsor-button"
+            href="https://github.com/sponsors/danieljsaldana"
+            target="_blank"
+            rel="noopener"
+            ><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="assets/heart.svg#heart" /></svg
+            ><span>Sponsor</span
+            ><span class="sr-only"
+              ><span lang="en"> — Support development on GitHub Sponsors</span
+              ><span lang="es"> — Apoya el desarrollo en GitHub Sponsors</span></span
+            ></a
+          >
         </div>
       </div>
     </header>
@@ -2659,6 +2719,19 @@
           >
         </div>
         <nav aria-label="Links">
+          <a
+            class="sponsor-button"
+            href="https://github.com/sponsors/danieljsaldana"
+            target="_blank"
+            rel="noopener"
+            ><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="assets/heart.svg#heart" /></svg
+            ><span>Sponsor</span
+            ><span class="sr-only"
+              ><span lang="en"> — Support development on GitHub Sponsors</span
+              ><span lang="es"> — Apoya el desarrollo en GitHub Sponsors</span></span
+            ></a
+          >
           <a href="https://github.com/danieljsaldana/goliat-cloud-inventory">GitHub</a
           ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/tree/main/docs"
             ><span lang="en">Documentation</span><span lang="es">Documentación</span></a

@@ -22,4 +22,4 @@ El cambio no es retroactivo. El código y las versiones ya distribuidos bajo MIT
 
 Las dependencias, Archify, los componentes derivados de shadcn, las fuentes y los iconos conservan sus propias licencias. Mantén todos los avisos de terceros, incluidos `vendor/archify/THIRD_PARTY_NOTICES.md` y las licencias de los assets. Esta página resume el alcance; prevalecen los textos de las licencias aplicables.
 
-The product website also uses the Lucide star icon under its existing ISC/MIT notices in `site/assets/Lucide-LICENSE.txt`. El icono de estrella Lucide conserva sus avisos ISC/MIT; la licencia del producto no los sustituye.
+The product website also uses the Lucide star and Sponsor heart icons under its existing ISC/MIT notices in `site/assets/Lucide-LICENSE.txt`. Los iconos de estrella y corazón de Lucide conservan sus avisos ISC/MIT; la licencia del producto no los sustituye.
