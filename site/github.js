@@ -114,6 +114,15 @@ export async function getStarSnapshot(
   const name = repositoryName(repository);
   if (!name) return null;
   const key = 'goliat:github-stars-snapshot:' + name;
+  const state = { known: readStarSnapshot(repository, fallback, { now }) };
+  const prefer = (snapshot) => {
+    if (
+      snapshot &&
+      (!state.known || Date.parse(snapshot.checkedAt) > Date.parse(state.known.checkedAt))
+    )
+      state.known = snapshot;
+    return state.known;
+  };
   const remember = (snapshot) => {
     if (snapshot)
       try {
@@ -132,12 +141,13 @@ export async function getStarSnapshot(
   try {
     const cached = JSON.parse(storage?.getItem(key) ?? 'null');
     const value = readStarSnapshot(repository, cached?.snapshot, { now });
-    if (value && Number.isFinite(cached.at) && cached.at <= now() && now() - cached.at < 900000)
-      return value;
+    if (value && Number.isFinite(cached.at) && cached.at >= 0 && cached.at <= now()) {
+      prefer(value);
+      if (now() - cached.at < 900000) return state.known;
+    }
   } catch {
     /* Optional cache or network metadata may be unavailable. */
   }
-  const state = { known: readStarSnapshot(repository, fallback, { now }) };
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -153,9 +163,8 @@ export async function getStarSnapshot(
     if (response.ok) {
       const daily = readStarSnapshot(repository, await response.json(), { now });
       if (daily) {
-        if (now() - Date.parse(daily.checkedAt) < 172800000) return remember(daily);
-        if (!state.known || Date.parse(daily.checkedAt) > Date.parse(state.known.checkedAt))
-          state.known = daily;
+        prefer(daily);
+        if (now() - Date.parse(daily.checkedAt) < 172800000) return remember(state.known);
       }
     }
   } catch {
@@ -164,5 +173,5 @@ export async function getStarSnapshot(
     clearTimeout(timer);
   }
   const live = await apiSnapshot(repository, { fetcher, storage, now, timeoutMs });
-  return remember(live ?? state.known);
+  return remember(prefer(live));
 }

@@ -181,3 +181,47 @@ test('offline requests retain the dated known value without inventing zero or fr
   );
   assert.equal(state.calls, 0);
 });
+
+test('expired cache survives failed refreshes and never replaces a newer dated value', async () => {
+  const storage = memory(),
+    state = { at: Date.now(), calls: 0 };
+  const checked_at = new Date(state.at - 3600000).toISOString();
+  const first = await getStarSnapshot(repository, {
+    storage,
+    now: () => state.at,
+    fetcher: async () => ({ ok: true, json: async () => ({ repository, count: 7, checked_at }) }),
+  });
+  assert.deepEqual(first, { count: 7, checkedAt: checked_at });
+  const offline = async () => {
+    state.calls++;
+    throw Error('offline');
+  };
+  const older = { repository, count: 0, checked_at: new Date(state.at - 86400000).toISOString() };
+  state.at += 900001;
+  assert.deepEqual(
+    await getStarSnapshot(repository, {
+      storage,
+      now: () => state.at,
+      fetcher: offline,
+      fallback: older,
+    }),
+    first,
+  );
+  assert.equal(state.calls, 2);
+  state.at += 900001;
+  assert.deepEqual(
+    await getStarSnapshot(repository, { storage, now: () => state.at, fetcher: offline }),
+    first,
+  );
+  assert.equal(state.calls, 4);
+  const newer = { repository, count: 6, checked_at: new Date(state.at).toISOString() };
+  assert.deepEqual(
+    await getStarSnapshot(repository, {
+      storage,
+      now: () => state.at,
+      fetcher: offline,
+      fallback: newer,
+    }),
+    { count: 6, checkedAt: newer.checked_at },
+  );
+});
