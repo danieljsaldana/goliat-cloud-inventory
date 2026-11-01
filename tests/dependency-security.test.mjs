@@ -19,7 +19,7 @@ test('GHSA-g3hv-75wg-m249: ESLint glob preprocessing has bounded resource use', 
         const require = createRequire(import.meta.url);
         const eslintRequire = createRequire(require.resolve('eslint'));
         const { Minimatch } = eslintRequire('minimatch');
-        const matcher = new Minimatch('**/../'.repeat(20) + 'target.js', {
+        const matcher = new Minimatch('**/../x/'.repeat(20) + 'target.js', {
           optimizationLevel: 2,
           braceExpandMax: 64,
         });
