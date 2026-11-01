@@ -139,7 +139,7 @@ test('missing or stale daily data can use the live API, but never another reposi
   const state = { calls: 0 };
   const fetcher = async (url) => {
     state.calls++;
-    return url.includes('raw.githubusercontent.com')
+    return url === 'https://raw.githubusercontent.com/example/nexus/github-stats/stars.json'
       ? {
           ok: true,
           json: async () => ({
