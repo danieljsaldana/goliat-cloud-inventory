@@ -146,3 +146,15 @@ Consulta [CONTRIBUTING.md](../CONTRIBUTING.md) y [SECURITY.md](../SECURITY.md).
 The website reads that snapshot with a 15-minute browser cache. If it is unavailable or older than 48 hours, it can use the anonymous GitHub API or the dated fallback in `site/assets/github-stars.json`. Unavailable data is never replaced with a fabricated count. Use **Actions → Refresh public GitHub stars → Run workflow** to retry a delayed or disabled schedule. Forks must update the repository link and enable their own workflow. GitHub may delay scheduled jobs or disable them after prolonged inactivity.
 
 Las estrellas se actualizan a diario sin compilar ni desplegar la web. Solo se publica un JSON con el repositorio, el número real y la fecha de consulta; no contiene credenciales. El contador conserva una copia fechada si hay un fallo y muestra la fecha de comprobación en el tooltip.
+
+The `github-stats` branch is a data store for the counter, not the GitHub Pages deployment source.
+The refresh runs from `main` on `ubuntu-24.04`; the published website reads the JSON directly.
+Keep the branch for this mechanism: deleting it without changing the workflow makes the next
+refresh recreate it. A daily Pages build could replace it by fetching and embedding the count
+during the build, but the current design updates the data independently of website deployments.
+
+La rama `github-stats` guarda los datos del contador, no el despliegue de Pages. El refresco se
+ejecuta desde `main` en `ubuntu-24.04` y la web consulta directamente su JSON. Si se borra la rama
+sin cambiar el workflow, la siguiente ejecución la vuelve a crear. Una build diaria permitiría
+prescindir de ella si incorporase las estrellas a los archivos generados; actualmente el contador
+se actualiza sin compilar ni desplegar la página.
