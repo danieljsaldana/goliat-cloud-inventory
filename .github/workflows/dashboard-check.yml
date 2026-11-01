@@ -57,6 +57,8 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - name: Audit dependencies including development tooling
+        run: npm audit --include=dev --audit-level=moderate
       - run: npm run format:check
       - name: Verify public star metadata publishing
         run: python3 -m unittest discover -s tests -p test_github_stars.py -v
