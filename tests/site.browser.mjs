@@ -14,6 +14,23 @@ import { validateSchedule } from '../server/administration/schedule.mjs';
 
 const state = {};
 const prefix = '/goliat-cloud-inventory/';
+
+const starsURL =
+  'https://raw.githubusercontent.com/danieljsaldana/goliat-cloud-inventory/github-stats/stars.json';
+async function createSitePage(options = {}) {
+  const page = await state.browser.newPage(options);
+  await page.route(starsURL, (route) =>
+    route.fulfill({
+      json: {
+        repository: 'https://github.com/danieljsaldana/goliat-cloud-inventory',
+        count: 0,
+        checked_at: new Date().toISOString(),
+      },
+    }),
+  );
+  return page;
+}
+
 const contentTypes = {
   js: 'text/javascript',
   json: 'application/json',
@@ -32,7 +49,14 @@ before(async () => {
       { body: await readFile(new URL('../site/index.html', import.meta.url)), type: 'text/html' },
     ],
   ]);
-  for (const name of ['demo.js', 'demo.css', 'demo-dom.js', 'admin-demo.js', 'admin-demo.css']) {
+  for (const name of [
+    'demo.js',
+    'demo.css',
+    'demo-dom.js',
+    'admin-demo.js',
+    'admin-demo.css',
+    'github.js',
+  ]) {
     files.set(`${prefix}${name}`, {
       body: await readFile(new URL(`../site/${name}`, import.meta.url)),
       type: contentTypes[name.split('.').at(-1)],
@@ -110,7 +134,7 @@ for (const [locale, width] of [
   ['es', 390],
 ]) {
   test(`el menú, la búsqueda y la paginación usan datos reales de prueba en ${locale} a ${width}px`, async () => {
-    const page = await state.browser.newPage({ viewport: { width, height: 1000 }, locale });
+    const page = await createSitePage({ viewport: { width, height: 1000 }, locale });
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     const panel = page.locator('#inventory-panel');
@@ -222,7 +246,7 @@ for (const [locale, width] of [
 }
 
 test('FinOps simula costes de los recursos seleccionados, sin facturación cloud', async () => {
-  const page = await state.browser.newPage({ locale: 'es' });
+  const page = await createSitePage({ locale: 'es' });
   const data = JSON.parse(
     await readFile(new URL('../site/assets/demo-data.json', import.meta.url), 'utf8'),
   );
@@ -262,7 +286,7 @@ test('FinOps simula costes de los recursos seleccionados, sin facturación cloud
 });
 
 test('los fallos de datos son visibles y la demo permite reintentar', async () => {
-  const page = await state.browser.newPage({ locale: 'en' });
+  const page = await createSitePage({ locale: 'en' });
   try {
     await page.route('**/assets/demo-data.json', (route) =>
       route.fulfill({ status: 503, body: 'unavailable' }),
@@ -285,7 +309,7 @@ test('los fallos de datos son visibles y la demo permite reintentar', async () =
 for (const locale of ['en', 'es']) {
   for (const width of [320, 390, 768, 1440]) {
     test(`la portada ${locale} funciona bajo la ruta de Pages a ${width}px`, async () => {
-      const page = await state.browser.newPage({
+      const page = await createSitePage({
         viewport: { width, height: 1000 },
         locale,
         reducedMotion: 'reduce',
@@ -297,7 +321,7 @@ for (const locale of ['en', 'es']) {
         if (response.status() >= 400) failures.push(`${response.status()}: ${response.url()}`);
       });
       page.on('request', (request) => {
-        if (!request.url().startsWith(state.url))
+        if (!request.url().startsWith(state.url) && request.url() !== starsURL)
           failures.push(`External request: ${request.url()}`);
       });
       try {
@@ -359,7 +383,7 @@ for (const locale of ['en', 'es']) {
 
 for (const locale of ['en', 'es']) {
   test(`Usuarios permite cambios locales de rol y protege cuentas en ${locale}`, async () => {
-    const page = await state.browser.newPage({
+    const page = await createSitePage({
       locale,
       viewport: { width: locale === 'es' ? 390 : 1440, height: 1000 },
     });
@@ -426,7 +450,7 @@ for (const locale of ['en', 'es']) {
       await readFile(new URL('../site/assets/demo-data.json', import.meta.url), 'utf8'),
     ).management.administration;
     const executions = fixture.metrics.find(({ id }) => id === 'executions').data;
-    const page = await state.browser.newPage({
+    const page = await createSitePage({
       locale,
       viewport: { width: locale === 'es' ? 390 : 1440, height: 1000 },
     });
@@ -498,14 +522,17 @@ for (const locale of ['es', 'en']) {
     const fixture = JSON.parse(
       await readFile(new URL('../site/assets/demo-data.json', import.meta.url), 'utf8'),
     ).management.administration;
-    const page = await state.browser.newPage({
+    const page = await createSitePage({
       locale,
       viewport: { width: locale === 'es' ? 1440 : 390, height: 1000 },
     });
     const failures = [];
     page.on('pageerror', (error) => failures.push(error.message));
     page.on('request', (request) => {
-      if (request.method() !== 'GET' || !request.url().startsWith(state.url))
+      if (
+        request.method() !== 'GET' ||
+        (!request.url().startsWith(state.url) && request.url() !== starsURL)
+      )
         failures.push(request.url());
     });
     const panel = page.locator('#admin-panel');
@@ -660,7 +687,7 @@ for (const locale of ['es', 'en']) {
 }
 
 test('la tarjeta social incluye imagen y metadatos estáticos sin JavaScript', async () => {
-  const page = await state.browser.newPage({
+  const page = await createSitePage({
     javaScriptEnabled: false,
     userAgent: 'Twitterbot/1.0',
   });
@@ -717,7 +744,7 @@ test('la tarjeta social incluye imagen y metadatos estáticos sin JavaScript', a
 });
 
 test('idioma persistente, enlaces localizados y pestañas accesibles por teclado', async () => {
-  const page = await state.browser.newPage({ locale: 'en' });
+  const page = await createSitePage({ locale: 'en' });
   try {
     await page.goto(state.url);
     await page.locator('[data-set-lang="es"]').click();
@@ -752,8 +779,8 @@ test('idioma persistente, enlaces localizados y pestañas accesibles por teclado
 });
 
 test('la portada conserva contenido sin JavaScript y funciona sin almacenamiento', async () => {
-  const noScript = await state.browser.newPage({ javaScriptEnabled: false });
-  const noStorage = await state.browser.newPage({ locale: 'es' });
+  const noScript = await createSitePage({ javaScriptEnabled: false });
+  const noStorage = await createSitePage({ locale: 'es' });
   try {
     await noScript.goto(state.url);
     await expect(noScript.locator('#inventory-panel')).toBeVisible();
@@ -789,7 +816,7 @@ test('Archify reutiliza los documentos publicados y conserva el aislamiento', as
       await readFile(new URL(`../docs/${name}.html`, import.meta.url)),
     );
   }
-  const page = await state.browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const page = await createSitePage({ viewport: { width: 1440, height: 1000 } });
   try {
     await page.goto(state.url);
     const iframe = page.locator('.architecture-diagram iframe');
@@ -839,7 +866,7 @@ for (const [locale, width] of [
   ['en', 320],
 ]) {
   test(`el selector Archify cambia ambos diagramas y conserva el zoom al traducir en ${locale}`, async () => {
-    const page = await state.browser.newPage({ locale, viewport: { width, height: 1000 } });
+    const page = await createSitePage({ locale, viewport: { width, height: 1000 } });
     const navigations = [];
     const failures = [];
     page.on('framenavigated', (frame) => {
@@ -916,7 +943,7 @@ for (const [locale, width] of [
 }
 
 test('hover, selección y foco del menú se distinguen sin invadir la fila vecina', async () => {
-  const page = await state.browser.newPage({
+  const page = await createSitePage({
     viewport: { width: 1440, height: 1000 },
     locale: 'es',
   });
@@ -965,7 +992,7 @@ test('hover, selección y foco del menú se distinguen sin invadir la fila vecin
 
 for (const width of [320, 390, 768, 1440]) {
   test(`paginación numerada sin solapamientos a ${width}px`, async () => {
-    const page = await state.browser.newPage({
+    const page = await createSitePage({
       viewport: { width, height: 1000 },
       locale: 'es',
       hasTouch: width <= 540,
@@ -1058,6 +1085,60 @@ for (const width of [320, 390, 768, 1440]) {
       assert.equal(
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
         true,
+      );
+    } finally {
+      await page.close();
+    }
+  });
+}
+
+for (const [width, count] of [
+  [320, 0],
+  [390, 12345],
+  [1440, 12],
+]) {
+  test(`las estrellas son visibles y no desplazan la cabecera a ${width}px`, async () => {
+    const page = await createSitePage({
+      viewport: { width, height: 1000 },
+      locale: 'es',
+      reducedMotion: 'reduce',
+    });
+    const calls = { api: 0 };
+    await page.route(starsURL, (route) =>
+      route.fulfill({
+        json: {
+          repository: 'https://github.com/danieljsaldana/goliat-cloud-inventory',
+          count,
+          checked_at: new Date().toISOString(),
+        },
+      }),
+    );
+    await page.route('https://api.github.com/**', (route) => {
+      calls.api++;
+      return route.abort();
+    });
+    try {
+      await page.goto(state.url);
+      await page.evaluate(() => document.fonts.ready);
+      const link = page.locator('header .header-github');
+      const value = link.locator('[data-github-count]');
+      await expect(value).toHaveText(count === 12345 ? '12.3K' : String(count));
+      await expect(value).toBeVisible();
+      await expect(link).toHaveAttribute(
+        'aria-label',
+        `GitHub · ${new Intl.NumberFormat('es').format(count)} estrellas en GitHub`,
+      );
+      assert.equal(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        true,
+      );
+      const before = await link.boundingBox();
+      await link.hover();
+      assert.deepEqual(await link.boundingBox(), before);
+      assert.equal(
+        calls.api,
+        0,
+        'El dato diario válido evita consultas a la API desde cada visitante',
       );
     } finally {
       await page.close();

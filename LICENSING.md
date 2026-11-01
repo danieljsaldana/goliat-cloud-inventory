@@ -21,3 +21,5 @@ El código está disponible para consultar y colaborar; esta distribución no co
 El cambio no es retroactivo. El código y las versiones ya distribuidos bajo MIT conservan sus condiciones originales; este cambio no retira permisos ya concedidos sobre esas copias. El commit inmediatamente anterior es [`c456aa3d33169261e257506ff997dc42b49b4180`](https://github.com/danieljsaldana/goliat-cloud-inventory/blob/c456aa3d33169261e257506ff997dc42b49b4180/LICENSE), cuya licencia raíz era MIT. Consulta la licencia incluida en la versión que utilices. Se conservan las etiquetas, releases y el historial existentes.
 
 Las dependencias, Archify, los componentes derivados de shadcn, las fuentes y los iconos conservan sus propias licencias. Mantén todos los avisos de terceros, incluidos `vendor/archify/THIRD_PARTY_NOTICES.md` y las licencias de los assets. Esta página resume el alcance; prevalecen los textos de las licencias aplicables.
+
+The product website also uses the Lucide star icon under its existing ISC/MIT notices in `site/assets/Lucide-LICENSE.txt`. El icono de estrella Lucide conserva sus avisos ISC/MIT; la licencia del producto no los sustituye.
