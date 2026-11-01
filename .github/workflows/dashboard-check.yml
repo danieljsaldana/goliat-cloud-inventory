@@ -58,6 +58,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run format:check
+      - name: Verify public star metadata publishing
+        run: python3 -m unittest discover -s tests -p test_github_stars.py -v
       - name: Lint code
         if: needs.changes.outputs.dashboard == 'true' || needs.changes.outputs.functions == 'true' || needs.changes.outputs.site == 'true' || needs.changes.outputs.iac == 'true' || needs.changes.outputs.codeql == 'true'
         run: npm run lint

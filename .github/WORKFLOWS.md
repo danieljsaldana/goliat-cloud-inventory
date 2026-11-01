@@ -138,3 +138,11 @@ necesario para las APIs de releases; la CI de contribuciones conserva sus permis
 6. Para una versión, crea una release desde un commit de `main` con CI correcta. No publiques desde una pull request.
 
 Consulta [CONTRIBUTING.md](../CONTRIBUTING.md) y [SECURITY.md](../SECURITY.md).
+
+## Daily public GitHub stars
+
+`stars.yml` refreshes the public counter daily at 06:17 UTC, with manual dispatch available. It runs only the standard-library Python publisher and its unit tests, then writes `stars.json` on the data-only `github-stats` branch. It never changes `main`, builds the application or website, or deploys Pages. The job uses the short-lived `GITHUB_TOKEN` with contents-write permission; the browser receives no token. The dedicated branch contains one public JSON file and has independent Git history.
+
+The website reads that snapshot with a 15-minute browser cache. If it is unavailable or older than 48 hours, it can use the anonymous GitHub API or the dated fallback in `site/assets/github-stars.json`. Unavailable data is never replaced with a fabricated count. Use **Actions → Refresh public GitHub stars → Run workflow** to retry a delayed or disabled schedule. Forks must update the repository link and enable their own workflow. GitHub may delay scheduled jobs or disable them after prolonged inactivity.
+
+Las estrellas se actualizan a diario sin compilar ni desplegar la web. Solo se publica un JSON con el repositorio, el número real y la fecha de consulta; no contiene credenciales. El contador conserva una copia fechada si hay un fallo y muestra la fecha de comprobación en el tooltip.

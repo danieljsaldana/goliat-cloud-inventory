@@ -182,7 +182,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 24px;
-        height: 83px;
+        height: 75px;
       }
       .brand {
         display: flex;
@@ -223,18 +223,18 @@
         color: var(--blue);
       }
       .header-actions {
-        gap: 18px;
+        gap: 10px;
       }
       .language {
         gap: 2px;
-        padding: 3px;
+        padding: 2px;
         background: var(--soft);
         border: 1px solid var(--line);
         border-radius: 8px;
       }
       .language button {
-        min-height: 34px;
-        min-width: 35px;
+        min-height: 28px;
+        min-width: 31px;
         padding: 4px 7px;
         background: transparent;
         border: 0;
@@ -1335,7 +1335,7 @@
           padding: 8px;
           min-width: 38px;
         }
-        .header-actions .button span {
+        .header-github-label {
           display: none;
         }
         .language button {
@@ -1513,6 +1513,60 @@
           animation: none !important;
         }
       }
+
+      /* Repository metadata is compact and independent from the demo dashboard. */
+      .site-header .header-actions .header-github {
+        width: auto;
+        min-height: 34px;
+        padding: 5px 9px;
+        gap: 6px;
+        font-size: 12px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .header-github > .icon {
+        width: 16px;
+        height: 16px;
+      }
+      .github-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding-left: 7px;
+        margin-left: 1px;
+        border-left: 1px solid #cbdce8;
+        font-size: 11px;
+        font-variant-numeric: tabular-nums;
+      }
+      .github-stars .icon {
+        width: 13px;
+        height: 13px;
+        color: #93600f;
+      }
+      [data-github-count] {
+        min-width: 1ch;
+      }
+      @media (max-width: 800px) {
+        .header-inner {
+          height: 68px;
+          gap: 12px;
+        }
+      }
+      @media (max-width: 560px) {
+        .site-header .header-actions .header-github {
+          padding-inline: 8px;
+        }
+        .hero h1 {
+          font-size: clamp(30px, 8.7vw, 42px);
+          letter-spacing: -0.045em;
+        }
+        .hero {
+          padding-bottom: 34px;
+        }
+        .hero-description {
+          line-height: 1.75;
+        }
+      }
     </style>
     <link rel="stylesheet" href="demo.css" />
     <link rel="stylesheet" href="admin-demo.css" />
@@ -1628,12 +1682,17 @@
             </button>
           </div>
           <a
-            class="button small"
+            class="button small header-github"
+            data-repository
             href="https://github.com/danieljsaldana/goliat-cloud-inventory"
             aria-label="GitHub"
             ><svg class="icon" aria-hidden="true"><use href="#i-github" /></svg
-            ><span>GitHub</span></a
-          >
+            ><span class="header-github-label">GitHub</span
+            ><span class="github-stars" data-github-stars hidden
+              ><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <use href="assets/star.svg#star" /></svg
+              ><span data-github-count></span></span
+          ></a>
         </div>
       </div>
     </header>
@@ -1654,13 +1713,12 @@
             </h1>
             <p class="hero-description">
               <span lang="en"
-                >Explore resources across your subscriptions and understand your Azure costs. An
-                dashboard with source available for noncommercial use that you deploy and manage
-                yourself.</span
+                >Explore resources across your subscriptions and understand your Azure costs. A
+                self-hosted dashboard, with code available for noncommercial use.</span
               ><span lang="es"
                 >Explora los recursos de tus suscripciones y entiende tus costes de Azure. Un
-                dashboard con código disponible para uso no comercial que despliegas y gestionas en
-                tu entorno.</span
+                dashboard que gestionas en tu entorno, con código disponible para uso no
+                comercial.</span
               >
             </p>
             <div class="buttons">
@@ -2619,11 +2677,60 @@
     </footer>
     <script type="module">
       import { createDemo } from './demo.js';
+      import { getStarSnapshot, readStarSnapshot, formatStarCount } from './github.js';
       const demo = createDemo(document.querySelector('.dashboard'));
       const root = document.documentElement;
       const languageButtons = [...document.querySelectorAll('[data-set-lang]')];
       const storageKey = 'goliat-site-lang';
       const repository = 'https://github.com/danieljsaldana/goliat-cloud-inventory';
+      const githubState = { snapshot: null };
+      function renderGitHubStars() {
+        for (const badge of document.querySelectorAll('[data-github-stars]')) {
+          badge.hidden = githubState.snapshot === null;
+          if (!githubState.snapshot) continue;
+          const count = new Intl.NumberFormat(root.lang).format(githubState.snapshot.count);
+          badge.querySelector('[data-github-count]').textContent = formatStarCount(
+            githubState.snapshot.count,
+            root.lang,
+          );
+          const label =
+            root.lang === 'es' ? `${count} estrellas en GitHub` : `${count} stars on GitHub`;
+          badge.closest('a').setAttribute('aria-label', `GitHub · ${label}`);
+          const checked = new Intl.DateTimeFormat(root.lang, {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          }).format(new Date(githubState.snapshot.checkedAt));
+          badge.title =
+            root.lang === 'es'
+              ? `Última comprobación en GitHub: ${checked}`
+              : `Last checked on GitHub: ${checked}`;
+          badge.closest('a').title = badge.title;
+        }
+      }
+      async function loadGitHubStars() {
+        const metadata = { fallback: null, storage: null };
+        try {
+          metadata.storage = sessionStorage;
+        } catch {
+          /* Optional public metadata cache. */
+        }
+        try {
+          const response = await fetch(new URL('./assets/github-stars.json', import.meta.url));
+          if (response.ok) {
+            metadata.fallback = await response.json();
+            githubState.snapshot = readStarSnapshot(repository, metadata.fallback);
+            renderGitHubStars();
+          }
+        } catch {
+          /* A snapshot must never block the product page. */
+        }
+        const latest = await getStarSnapshot(repository, metadata);
+        if (latest) {
+          githubState.snapshot = latest;
+          renderGitHubStars();
+        }
+      }
+      loadGitHubStars();
       const diagramSelect = document.getElementById('diagram-select');
       const diagramFrame = document.getElementById('architecture-document');
       const diagrams = {
@@ -2667,6 +2774,7 @@
         root.dataset.lang = language;
         updateDiagram(language);
         demo.setLanguage(language);
+        renderGitHubStars();
         document.title =
           language === 'es'
             ? 'Goliat — Tu Azure, en perspectiva'
