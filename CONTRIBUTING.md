@@ -22,6 +22,7 @@ Do not use production credentials or real inventory data in tests, screenshots o
 ```bash
 npm ci
 npm --prefix functions ci
+npm audit --include=dev --audit-level=moderate
 npm run lint
 npm run format:check
 npm test
@@ -74,3 +75,10 @@ Classify pull requests with `bug`, `enhancement`, `documentation` or `dependenci
 so GitHub groups them correctly. See the [workflow guide](.github/WORKFLOWS.md).
 
 Dependency updates are proposed by Dependabot and reviewed before merging; they are not automatically merged.
+
+The root manifest temporarily overrides `minimatch` to `11.0.3` within ESLint's dependency tree,
+including `@eslint/config-array`, to address [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+ESLint's current dependency ranges still select the vulnerable major version. Remove the override
+once the upstream dependency tree resolves patched versions without it, after checking clean
+installation, linting, `tests/dependency-security.test.mjs` and the audit. CI audits development
+and runtime dependencies, blocking moderate or higher advisories.
