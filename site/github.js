@@ -123,13 +123,13 @@ export async function getStarSnapshot(
       state.known = snapshot;
     return state.known;
   };
-  const remember = (snapshot) => {
+  const remember = (snapshot, at = now()) => {
     if (snapshot)
       try {
         storage?.setItem(
           key,
           JSON.stringify({
-            at: now(),
+            at,
             snapshot: { repository, count: snapshot.count, checked_at: snapshot.checkedAt },
           }),
         );
@@ -143,7 +143,7 @@ export async function getStarSnapshot(
     const value = readStarSnapshot(repository, cached?.snapshot, { now });
     if (value && Number.isFinite(cached.at) && cached.at >= 0 && cached.at <= now()) {
       prefer(value);
-      if (now() - cached.at < 900000) return state.known;
+      if (now() - cached.at < 900000) return remember(state.known, cached.at);
     }
   } catch {
     /* Optional cache or network metadata may be unavailable. */
