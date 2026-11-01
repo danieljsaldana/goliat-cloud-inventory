@@ -41,6 +41,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
+      deployment: true
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Obtener el código
