@@ -100,6 +100,21 @@ Usa el entorno `github-pages` (solo `main`) y OIDC, sin secretos añadidos.
 Solo el job de despliegue recibe `pages: write` e `id-token: write`.
 La aplicación Next.js no se despliega en Pages.
 
+### Entornos de GitHub y registro de despliegues
+
+`github-pages` registra la publicación de la web y su URL en **Deployments**.
+El job que prepara una release en borrador usa el entorno `release` con `deployment: false`:
+conserva las restricciones de rama y los revisores configurados, pero no crea un despliegue.
+Las notas de versión y las versiones publicadas se consultan en **Releases**.
+El contador de despliegues refleja el historial de publicaciones de cada repositorio;
+no debe coincidir con el número de releases ni con el de otro producto.
+
+Configura `github-pages` y `release` para admitir únicamente la rama `main`.
+Los revisores son opcionales según tu equipo; las reglas de protección mediante GitHub Apps
+no son compatibles con `deployment: false`, porque necesitan un objeto de despliegue.
+En un fork, estos ajustes se configuran en **Settings → Environments**;
+los workflows no aplican automáticamente las políticas del repositorio original.
+
 ## Proceso del mantenedor
 
 ### Resumen de cada CI
