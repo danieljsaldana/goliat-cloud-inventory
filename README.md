@@ -227,7 +227,13 @@ The Archify selector switches between application architecture and the reference
 updating the title, help text and full-document link. Changing the language preserves the selected
 diagram and its zoom.
 
-Run `npm run build:site` before previewing or publishing: it copies the two public Archify
+The public star counter revalidates on page load, tab return and every visible minute.
+It reads the `github-stats` branch JSON, updated daily or through the manual workflow, and
+retains the last verified value on network failure. It needs no daily website build and exposes
+no tokens. Sponsor is the final footer link.
+
+Run `npm run build:site` before previewing or publishing: it updates the star module's cache
+version from its content and copies the two public Archify
 documents, generates `demo-data.json` from the fixed seed and copies the shared aggregation and
 pagination helpers into `site/assets/`. It does not read `.env` or query Azure or PostgreSQL.
 Generated files are ignored by Git. After editing

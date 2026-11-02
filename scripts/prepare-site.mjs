@@ -1,4 +1,5 @@
-import { copyFile, mkdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import files from '../server/modules/azure/seed/data/inventory.json' with { type: 'json' };
 import { records } from '../src/core/table/index.js';
 import { getCategoryOverview, resourceTags } from '../src/core/inventory/categories.js';
@@ -8,6 +9,17 @@ import spanish from '../src/core/i18n/locales/es.js';
 import { inventoryTagKeys } from '../src/features/administration/utils/inventoryTagKeys.js';
 
 const assets = new URL('../site/assets/', import.meta.url);
+const githubRevision = createHash('sha256')
+  .update(await readFile(new URL('../site/github.js', import.meta.url)))
+  .digest('hex')
+  .slice(0, 12);
+const indexPath = new URL('../site/index.html', import.meta.url);
+const index = await readFile(indexPath, 'utf8');
+const versionedIndex = index.replace(
+  /from '\.\/github\.js(?:\?v=[a-f0-9]+)?'/u,
+  `from './github.js?v=${githubRevision}'`,
+);
+if (versionedIndex !== index) await writeFile(indexPath, versionedIndex);
 for (const name of ['LICENSE', 'NOTICE', 'LICENSING.md']) {
   await copyFile(
     new URL(`../${name}`, import.meta.url),

@@ -2701,6 +2701,13 @@
           >
         </div>
         <nav aria-label="Links">
+          <a href="https://github.com/danieljsaldana/goliat-cloud-inventory">GitHub</a
+          ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/tree/main/docs"
+            ><span lang="en">Documentation</span><span lang="es">Documentación</span></a
+          ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/blob/main/LICENSE"
+            ><span lang="en">Noncommercial licence</span
+            ><span lang="es">Licencia no comercial</span></a
+          >
           <a
             class="sponsor-button"
             href="https://github.com/sponsors/danieljsaldana"
@@ -2714,13 +2721,6 @@
               ><span lang="es"> — Apoya el desarrollo en GitHub Sponsors</span></span
             ></a
           >
-          <a href="https://github.com/danieljsaldana/goliat-cloud-inventory">GitHub</a
-          ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/tree/main/docs"
-            ><span lang="en">Documentation</span><span lang="es">Documentación</span></a
-          ><a href="https://github.com/danieljsaldana/goliat-cloud-inventory/blob/main/LICENSE"
-            ><span lang="en">Noncommercial licence</span
-            ><span lang="es">Licencia no comercial</span></a
-          >
         </nav>
       </div>
       <p class="container independent">
@@ -2732,13 +2732,23 @@
     </footer>
     <script type="module">
       import { createDemo } from './demo.js';
-      import { getStarSnapshot, readStarSnapshot, formatStarCount } from './github.js';
+      import {
+        getStarSnapshot,
+        readStarSnapshot,
+        formatStarCount,
+      } from './github.js?v=f2fe015db7fb';
       const demo = createDemo(document.querySelector('.dashboard'));
       const root = document.documentElement;
       const languageButtons = [...document.querySelectorAll('[data-set-lang]')];
       const storageKey = 'goliat-site-lang';
       const repository = 'https://github.com/danieljsaldana/goliat-cloud-inventory';
-      const githubState = { snapshot: null };
+      const githubState = { snapshot: null, inFlight: null };
+      const metadata = { fallback: null, storage: null, refresh: true };
+      try {
+        metadata.storage = sessionStorage;
+      } catch {
+        /* Optional public metadata cache. */
+      }
       function renderGitHubStars() {
         for (const badge of document.querySelectorAll('[data-github-stars]')) {
           badge.hidden = githubState.snapshot === null;
@@ -2762,30 +2772,56 @@
           badge.closest('a').title = badge.title;
         }
       }
-      async function loadGitHubStars() {
-        const metadata = { fallback: null, storage: null };
-        try {
-          metadata.storage = sessionStorage;
-        } catch {
-          /* Optional public metadata cache. */
-        }
-        try {
-          const response = await fetch(new URL('./assets/github-stars.json', import.meta.url));
-          if (response.ok) {
-            metadata.fallback = await response.json();
-            githubState.snapshot = readStarSnapshot(repository, metadata.fallback);
-            renderGitHubStars();
-          }
-        } catch {
-          /* A snapshot must never block the product page. */
-        }
-        const latest = await getStarSnapshot(repository, metadata);
-        if (latest) {
-          githubState.snapshot = latest;
-          renderGitHubStars();
-        }
+      function applyGitHubStars(snapshot) {
+        if (
+          !snapshot ||
+          (githubState.snapshot &&
+            Date.parse(snapshot.checkedAt) < Date.parse(githubState.snapshot.checkedAt))
+        )
+          return;
+        githubState.snapshot = snapshot;
+        renderGitHubStars();
       }
-      loadGitHubStars();
+      async function loadGitHubStars() {
+        if (!metadata.fallback) {
+          const controller = new AbortController(),
+            timer = setTimeout(() => controller.abort(), 4000);
+          try {
+            const response = await fetch(new URL('./assets/github-stars.json', import.meta.url), {
+              cache: 'no-store',
+              signal: controller.signal,
+            });
+            if (response.ok) {
+              const fallback = await response.json();
+              const snapshot = readStarSnapshot(repository, fallback);
+              if (snapshot) {
+                metadata.fallback = fallback;
+                applyGitHubStars(snapshot);
+              }
+            }
+          } catch {
+            /* A snapshot must never block the product page. */
+          } finally {
+            clearTimeout(timer);
+          }
+        }
+        applyGitHubStars(await getStarSnapshot(repository, metadata));
+      }
+      function refreshVisibleStars() {
+        if (document.visibilityState === 'hidden') return;
+        if (!githubState.inFlight)
+          githubState.inFlight = loadGitHubStars()
+            .catch(() => {})
+            .finally(() => {
+              githubState.inFlight = null;
+            });
+        return githubState.inFlight;
+      }
+      window.addEventListener('focus', refreshVisibleStars);
+      window.addEventListener('pageshow', refreshVisibleStars);
+      document.addEventListener('visibilitychange', refreshVisibleStars);
+      setInterval(refreshVisibleStars, 60000);
+      refreshVisibleStars();
       const diagramSelect = document.getElementById('diagram-select');
       const diagramFrame = document.getElementById('architecture-document');
       const diagrams = {

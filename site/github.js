@@ -109,6 +109,7 @@ export async function getStarSnapshot(
     now = Date.now,
     timeoutMs = 4000,
     fallback = null,
+    refresh = false,
   } = {},
 ) {
   const name = repositoryName(repository);
@@ -143,7 +144,7 @@ export async function getStarSnapshot(
     const value = readStarSnapshot(repository, cached?.snapshot, { now });
     if (value && Number.isFinite(cached.at) && cached.at >= 0 && cached.at <= now()) {
       prefer(value);
-      if (now() - cached.at < 900000) return remember(state.known, cached.at);
+      if (!refresh && now() - cached.at < 900000) return remember(state.known, cached.at);
     }
   } catch {
     /* Optional cache or network metadata may be unavailable. */
@@ -151,15 +152,15 @@ export async function getStarSnapshot(
   const controller = new AbortController(),
     timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetcher(
-      `https://raw.githubusercontent.com/${name}/github-stats/stars.json`,
-      {
-        cache: 'no-cache',
-        credentials: 'omit',
-        referrerPolicy: 'no-referrer',
-        signal: controller.signal,
-      },
-    );
+    const url = new URL(`https://raw.githubusercontent.com/${name}/github-stats/stars.json`);
+    // A bounded cache key avoids an old CDN response after a manual data refresh.
+    if (refresh) url.searchParams.set('v', Math.floor(now() / 60000));
+    const response = await fetcher(url.href, {
+      cache: refresh ? 'no-store' : 'no-cache',
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+      signal: controller.signal,
+    });
     if (response.ok) {
       const daily = readStarSnapshot(repository, await response.json(), { now });
       if (daily) {

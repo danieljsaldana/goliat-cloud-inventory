@@ -17,9 +17,15 @@ const prefix = '/goliat-cloud-inventory/';
 
 const starsURL =
   'https://raw.githubusercontent.com/danieljsaldana/goliat-cloud-inventory/github-stats/stars.json';
+const repository = 'https://github.com/danieljsaldana/goliat-cloud-inventory';
+const starsCacheKey = 'goliat:github-stars-snapshot:danieljsaldana/goliat-cloud-inventory';
+const isStarsURL = (value) => {
+  const url = new URL(value);
+  return `${url.origin}${url.pathname}` === starsURL;
+};
 async function createSitePage(options = {}) {
   const page = await state.browser.newPage(options);
-  await page.route(starsURL, (route) =>
+  await page.route(isStarsURL, (route) =>
     route.fulfill({
       json: {
         repository: 'https://github.com/danieljsaldana/goliat-cloud-inventory',
@@ -321,7 +327,7 @@ for (const locale of ['en', 'es']) {
         if (response.status() >= 400) failures.push(`${response.status()}: ${response.url()}`);
       });
       page.on('request', (request) => {
-        if (!request.url().startsWith(state.url) && request.url() !== starsURL)
+        if (!request.url().startsWith(state.url) && !isStarsURL(request.url()))
           failures.push(`External request: ${request.url()}`);
       });
       try {
@@ -329,6 +335,12 @@ for (const locale of ['en', 'es']) {
         await expect(page.locator('.dashboard')).toHaveAttribute('data-demo-ready', 'true');
         await page.evaluate(() => document.fonts.ready);
         await expect(page.locator('html')).toHaveAttribute('lang', locale);
+        await expect(page.locator('header .sponsor-button')).toHaveCount(0);
+        await expect(page.locator('footer nav a').last()).toHaveAttribute(
+          'href',
+          'https://github.com/sponsors/danieljsaldana',
+        );
+        await expect(page.locator('footer .sponsor-button')).toBeVisible();
         assert.equal(await page.locator('h1:visible').count(), 1);
         const providerMark = await readFile(
           new URL('../src/components/branding/ProviderMark/index.jsx', import.meta.url),
@@ -531,7 +543,7 @@ for (const locale of ['es', 'en']) {
     page.on('request', (request) => {
       if (
         request.method() !== 'GET' ||
-        (!request.url().startsWith(state.url) && request.url() !== starsURL)
+        (!request.url().startsWith(state.url) && !isStarsURL(request.url()))
       )
         failures.push(request.url());
     });
@@ -1104,7 +1116,7 @@ for (const [width, count] of [
       reducedMotion: 'reduce',
     });
     const calls = { api: 0 };
-    await page.route(starsURL, (route) =>
+    await page.route(isStarsURL, (route) =>
       route.fulfill({
         json: {
           repository: 'https://github.com/danieljsaldana/goliat-cloud-inventory',
@@ -1145,3 +1157,100 @@ for (const [width, count] of [
     }
   });
 }
+
+test('las estrellas sustituyen el cero en caché y se revalidan al volver y cada minuto visible', async () => {
+  const page = await createSitePage({ locale: 'es' });
+  const at = Date.now(),
+    urls = [],
+    errors = [];
+  const fixture = {
+    snapshot: { repository, count: 1, checked_at: new Date(at + 1000).toISOString() },
+  };
+  await page.clock.install();
+  await page.addInitScript(
+    ({ repository, starsCacheKey, at }) => {
+      if (window !== window.top) return;
+      sessionStorage.setItem(
+        starsCacheKey,
+        JSON.stringify({
+          at,
+          snapshot: { repository, count: 0, checked_at: new Date(at - 3600000).toISOString() },
+        }),
+      );
+    },
+    { repository, starsCacheKey, at },
+  );
+  await page.route('**/assets/github-stars.json', (route) =>
+    route.fulfill({
+      json: { repository, count: 0, checked_at: new Date(at - 3600000).toISOString() },
+    }),
+  );
+  await page.route(isStarsURL, (route) => {
+    urls.push(route.request().url());
+    return route.fulfill({ json: fixture.snapshot });
+  });
+  page.on('pageerror', (error) => errors.push(error.message));
+  const count = page.locator('header [data-github-count]');
+  try {
+    await page.goto(state.url);
+    await expect(count).toHaveText('1');
+    fixture.snapshot = { repository, count: 2, checked_at: new Date(at + 2000).toISOString() };
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await expect(count).toHaveText('2');
+    fixture.snapshot = { repository, count: 0, checked_at: new Date(at + 3000).toISOString() };
+    await page.clock.fastForward(60001);
+    await expect(count).toHaveText('0');
+    assert.notEqual(new URL(urls[0]).search, new URL(urls.at(-1)).search);
+    const visibleRequests = urls.length;
+    await page.evaluate(() =>
+      Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'hidden' }),
+    );
+    await page.clock.fastForward(60001);
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    assert.equal(urls.length, visibleRequests, 'Una pestaña oculta no consulta el contador');
+    fixture.snapshot = { repository, count: 3, checked_at: new Date(at + 4000).toISOString() };
+    await page.evaluate(() => {
+      delete document.visibilityState;
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await expect(count).toHaveText('3');
+    assert.deepEqual(errors, []);
+  } finally {
+    await page.close();
+  }
+});
+
+test('una copia local bloqueada no impide cargar las estrellas ni volver a actualizarlas', async () => {
+  const page = await createSitePage();
+  const blocked = [],
+    at = Date.now();
+  const fixture = {
+    snapshot: { repository, count: 1, checked_at: new Date(at + 1000).toISOString() },
+  };
+  await page.clock.install();
+  await page.route('**/assets/github-stars.json', (route) => {
+    blocked.push(route);
+  });
+  await page.route(isStarsURL, (route) => route.fulfill({ json: fixture.snapshot }));
+  const count = page.locator('header [data-github-count]');
+  try {
+    await page.goto(state.url);
+    await expect.poll(() => blocked.length).toBe(1);
+    await page.clock.fastForward(4001);
+    await expect(count).toHaveText('1');
+    fixture.snapshot = { repository, count: 2, checked_at: new Date(at + 2000).toISOString() };
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await expect.poll(() => blocked.length).toBe(2);
+    await page.clock.fastForward(4001);
+    await expect(count).toHaveText('2');
+  } finally {
+    for (const route of blocked) {
+      try {
+        await route.abort();
+      } catch {
+        /* The timed-out browser request may already be gone. */
+      }
+    }
+    await page.close();
+  }
+});
