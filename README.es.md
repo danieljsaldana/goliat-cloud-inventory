@@ -229,7 +229,13 @@ El selector del visor Archify alterna entre la arquitectura de la aplicación y 
 Azure de referencia. Actualiza el título, la ayuda y el enlace al documento completo; cambiar
 el idioma conserva el diagrama seleccionado y su zoom.
 
-Ejecuta `npm run build:site` antes de previsualizar o publicar: copia los dos documentos
+El contador revalida las estrellas públicas al abrir la web, volver a la pestaña y cada minuto
+mientras esté visible. Lee el JSON de la rama `github-stats`, actualizado a diario o mediante
+el workflow manual, y conserva el último dato verificado si falla la red. No necesita una build
+diaria ni expone tokens. Sponsor aparece como último enlace del footer.
+
+Ejecuta `npm run build:site` antes de previsualizar o publicar: actualiza la versión de caché
+del módulo del contador según su contenido y copia los dos documentos
 Archify públicos a `site/assets/`, genera `demo-data.json` desde la semilla fija y copia los
 helpers compartidos de agregación y paginación. No lee `.env` ni consulta Azure o PostgreSQL.
 Los archivos generados se ignoran en Git. Tras editar

@@ -160,6 +160,76 @@ test('missing or stale daily data can use the live API, but never another reposi
   assert.equal(state.calls, 2);
 });
 
+test('visible-page refresh replaces a recently cached zero with new scheduled data', async () => {
+  const storage = memory(),
+    at = Date.now();
+  const oldDate = new Date(at - 3600000).toISOString(),
+    newDate = new Date(at - 1000).toISOString();
+  const key = 'goliat:github-stars-snapshot:example/nexus';
+  storage.setItem(
+    key,
+    JSON.stringify({ at: at - 1000, snapshot: { repository, count: 0, checked_at: oldDate } }),
+  );
+  const calls = [];
+  const fetcher = async (url, options) => {
+    const parsed = new URL(url);
+    calls.push(url);
+    assert.equal(parsed.origin, 'https://raw.githubusercontent.com');
+    assert.equal(parsed.pathname, '/example/nexus/github-stats/stars.json');
+    assert.equal(parsed.searchParams.get('v'), String(Math.floor(at / 60000)));
+    assert.equal(options.cache, 'no-store');
+    assert.equal(options.credentials, 'omit');
+    assert.equal(options.headers?.Authorization, undefined);
+    return { ok: true, json: async () => ({ repository, count: 1, checked_at: newDate }) };
+  };
+  assert.deepEqual(
+    await getStarSnapshot(repository, { storage, fetcher, now: () => at, refresh: true }),
+    { count: 1, checkedAt: newDate },
+  );
+  assert.equal(calls.length, 1);
+  assert.equal(JSON.parse(storage.getItem(key)).snapshot.count, 1);
+});
+
+test('a refreshed count can decrease and each new minute revalidates another CDN key', async () => {
+  const storage = memory(),
+    at = Date.now();
+  const oldDate = new Date(at - 3600000).toISOString(),
+    newDate = new Date(at - 1000).toISOString();
+  storage.setItem(
+    'goliat:github-stars-snapshot:example/nexus',
+    JSON.stringify({ at, snapshot: { repository, count: 1, checked_at: oldDate } }),
+  );
+  const urls = [];
+  const fetcher = async (url) => {
+    urls.push(url);
+    return { ok: true, json: async () => ({ repository, count: 0, checked_at: newDate }) };
+  };
+  assert.deepEqual(
+    await getStarSnapshot(repository, { storage, fetcher, now: () => at, refresh: true }),
+    { count: 0, checkedAt: newDate },
+  );
+  await getStarSnapshot(repository, { storage, fetcher, now: () => at + 60000, refresh: true });
+  assert.notEqual(urls[0], urls[1]);
+});
+
+test('forced refresh preserves a newer verified snapshot when both sources fail', async () => {
+  const storage = memory(),
+    at = Date.now(),
+    checked_at = new Date(at - 3600000).toISOString();
+  storage.setItem(
+    'goliat:github-stars-snapshot:example/nexus',
+    JSON.stringify({ at, snapshot: { repository, count: 1, checked_at } }),
+  );
+  const fetcher = async () => {
+    throw Error('offline');
+  };
+  const fallback = { repository, count: 0, checked_at: new Date(at - 86400000).toISOString() };
+  assert.deepEqual(
+    await getStarSnapshot(repository, { storage, fetcher, now: () => at, refresh: true, fallback }),
+    { count: 1, checkedAt: checked_at },
+  );
+});
+
 test('offline requests retain the dated known value without inventing zero or freshness', async () => {
   const checked_at = new Date(Date.now() - 259200000).toISOString();
   const fetcher = async () => {
